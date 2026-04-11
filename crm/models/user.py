@@ -2,8 +2,13 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime, Enum
 from sqlalchemy.orm import relationship
 
-from base import Base
+from crm.models.base import Base
+from crm.models.client import Client
+from crm.models.contract import Contract
+from crm.models.event import Event
 
+
+# employee_number to add later on
 
 class User(Base):
     __tablename__= 'user'
