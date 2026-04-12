@@ -1,0 +1,27 @@
+from crm.services import authorization_service
+
+
+# Test the function has_role
+
+def test_has_role_returns_true_if_role_in_payload():
+    test_payload = {'role': 'sales'}
+
+    result = authorization_service.has_role(test_payload, 'sales')
+
+    assert result is True
+
+
+def test_has_role_returns_false_if_role_not_in_payload():
+    test_payload = {'role': 'management'}
+
+    result = authorization_service.has_role(test_payload, 'sales')
+
+    assert result is False
+
+
+def test_has_role_returns_false_if_payload_is_none():
+    test_payload = None
+
+    result = authorization_service.has_role(test_payload, 'sales')
+
+    assert result is False
