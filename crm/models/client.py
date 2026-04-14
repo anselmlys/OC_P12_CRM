@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
-from base import Base
+from crm.models.base import Base
 
 class Client(Base):
     __tablename__ = 'client'
