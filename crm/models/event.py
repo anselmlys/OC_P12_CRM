@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
-from base import Base
+from crm.models.base import Base
+
 
 class Event(Base):
     __tablename__= 'event'

@@ -6,9 +6,11 @@ from crm.models.base import Base
 from crm.models.user import User
 from crm.models.client import Client
 from crm.models.contract import Contract
+from crm.models.event import Event
 from crm.repositories.user_repository import UserRepository
 from crm.repositories.client_repository import ClientRepository
 from crm.repositories.contract_repository import ContractRepository
+from crm.repositories.event_repository import EventRepository
 
 
 @pytest.fixture
@@ -103,3 +105,31 @@ def contract_2(session, client_2):
     session.commit()
     session.refresh(contract_2)
     return contract_2
+
+
+@pytest.fixture
+def event_repo(session):
+    event_repo = EventRepository(session)
+    return event_repo
+
+
+@pytest.fixture
+def event_1(session, contract_1):
+    event_1 = Event(
+        contract_id = contract_1.id,
+    )
+    session.add(event_1)
+    session.commit()
+    session.refresh(event_1)
+    return event_1
+
+
+@pytest.fixture
+def event_2(session, contract_2):
+    event_2 = Event(
+        contract_id = contract_2.id,
+    )
+    session.add(event_2)
+    session.commit()
+    session.refresh(event_2)
+    return event_2
