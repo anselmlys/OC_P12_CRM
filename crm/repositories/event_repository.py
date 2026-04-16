@@ -1,17 +1,16 @@
-from sqlalchemy.exc import SQLAlchemyError
-
 from crm.models.event import Event
+from crm.repositories.base_repository import BaseRepository
 
 
-class EventRepository:
+class EventRepository(BaseRepository):
     '''Repository responsible for db access for Event objects.'''
-
-    def __init__(self, session):
-        self.session = session
-
-    def get_all(self):
-        try:
-            events = self.session.query(Event).all()
-            return events
-        except SQLAlchemyError as e:
-            raise RuntimeError(f'Database error while fetching client data') from e
+    model = Event
+    editable_fields = {
+        'contract_id',
+        'start_date',
+        'end_date',
+        'support_contact_id',
+        'location',
+        'number_of_attendees',
+        'notes',
+    }

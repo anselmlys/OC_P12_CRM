@@ -1,16 +1,13 @@
-from sqlalchemy.exc import SQLAlchemyError
-
 from crm.models.contract import Contract
+from crm.repositories.base_repository import BaseRepository
 
 
-class ContractRepository:
+class ContractRepository(BaseRepository):
     '''Repository responsible for db access for Contract objects.'''
-
-    def __init__(self, session):
-        self.session = session
-
-    def get_all(self):
-        try:
-            return self.session.query(Contract).all()
-        except SQLAlchemyError as e:
-            raise RuntimeError(f'Database error while fetching client data') from e
+    model = Contract
+    editable_fields = {
+        'client_id',
+        'total_amount',
+        'remaining_amount',
+        'signed',
+    }
