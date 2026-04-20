@@ -1,4 +1,5 @@
 import pytest
+import time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -7,10 +8,13 @@ from crm.models.user import User
 from crm.models.client import Client
 from crm.models.contract import Contract
 from crm.models.event import Event
+
 from crm.repositories.user_repository import UserRepository
 from crm.repositories.client_repository import ClientRepository
 from crm.repositories.contract_repository import ContractRepository
 from crm.repositories.event_repository import EventRepository
+
+from crm.controllers.client_controller import ClientController
 
 
 @pytest.fixture
@@ -24,6 +28,28 @@ def session():
     yield session
 
     session.close()
+
+
+@pytest.fixture
+def sales_payload():
+    now = int(time.time())
+    return {
+        'sub': '1',
+        'role': 'sales',
+        'iat': now,
+        'exp': now + 5000,
+    }
+
+
+@pytest.fixture
+def management_payload():
+    now = int(time.time())
+    return {
+        'sub': '2',
+        'role': 'management',
+        'iat': now,
+        'exp': now + 5000,
+    }
 
 
 @pytest.fixture
@@ -51,6 +77,12 @@ def user(session):
 def client_repo(session):
     client_repo = ClientRepository(session)
     return client_repo
+
+
+@pytest.fixture
+def client_controller(client_repo):
+    client_controller = ClientController(client_repo)
+    return client_controller
 
 
 @pytest.fixture
