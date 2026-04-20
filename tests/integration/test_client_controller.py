@@ -94,3 +94,125 @@ def test_create_client_returns_none_if_user_does_not_have_sales_role(client_cont
 
     assert result is None
     assert session.query(Client).count() == 0
+
+
+# Test the method update_client
+
+def test_update_client_returns_updated_client_and_save_in_database(client_controller, sales_payload, monkeypatch, session):
+    monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
+                        lambda: sales_payload,)
+    
+    client = client_controller.create_client(
+        last_name='Doe',
+        first_name='Jane',
+        email='test@test.com'
+    )
+
+    result = client_controller.update_client(
+        client=client,
+        last_name='Doe',
+        first_name='Jane',
+        email=' janedoe@test.com   ',
+        phone_number=' 0202020202   ',
+        company_name=None,
+    )
+
+    assert result.last_name == 'Doe'
+    assert result.first_name == 'Jane'
+    assert result.email == 'janedoe@test.com'
+    assert result.phone_number == '0202020202'
+    assert result.company_name is None
+
+    updated_client = session.query(Client).filter(Client.id == client.id).first()
+
+    assert updated_client is not None 
+    assert updated_client.last_name == result.last_name
+    assert updated_client.first_name == result.first_name
+    assert updated_client.email == result.email
+    assert updated_client.phone_number == result.phone_number
+    assert updated_client.company_name == result.company_name
+
+
+def test_update_client_returns_none_if_user_not_authenticated(monkeypatch, client_controller, sales_payload, session):
+    monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
+                        lambda: sales_payload,)
+    
+    client = client_controller.create_client(
+        last_name='Doe',
+        first_name='Jane',
+        email='test@test.com'
+    )
+
+    monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
+                        lambda: None,)
+    
+    result = client_controller.update_client(
+        client=client,
+        last_name='Doe',
+        first_name='Jane',
+        email=' janedoe@test.com   ',
+        phone_number=' 0202020202   ',
+        company_name=None,
+    )
+
+    assert result is None
+
+    client_in_db = session.query(Client).filter(Client.id == client.id).first()
+
+    assert client.email == client_in_db.email
+
+
+def test_update_client_returns_none_if_user_does_not_have_sales_role(monkeypatch, client_controller, sales_payload, session):
+    monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
+                        lambda: sales_payload,)
+    
+    client = client_controller.create_client(
+        last_name='Doe',
+        first_name='Jane',
+        email='test@test.com'
+    )
+
+    sales_payload['role'] = 'management'
+    
+    result = client_controller.update_client(
+        client=client,
+        last_name='Doe',
+        first_name='Jane',
+        email=' janedoe@test.com   ',
+        phone_number=' 0202020202   ',
+        company_name=None,
+    )
+
+    assert result is None
+
+    client_in_db = session.query(Client).filter(Client.id == client.id).first()
+
+    assert client.email == client_in_db.email
+
+
+def test_update_client_returns_none_if_user_not_contact_of_client(monkeypatch, client_controller, sales_payload, session):
+    monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
+                        lambda: sales_payload,)
+    
+    client = client_controller.create_client(
+        last_name='Doe',
+        first_name='Jane',
+        email='test@test.com'
+    )
+
+    sales_payload['sub'] = '2'
+    
+    result = client_controller.update_client(
+        client=client,
+        last_name='Doe',
+        first_name='Jane',
+        email=' janedoe@test.com   ',
+        phone_number=' 0202020202   ',
+        company_name=None,
+    )
+
+    assert result is None
+
+    client_in_db = session.query(Client).filter(Client.id == client.id).first()
+
+    assert client.email == client_in_db.email

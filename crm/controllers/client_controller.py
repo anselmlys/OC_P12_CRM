@@ -50,3 +50,41 @@ class ClientController:
         )
 
         return client
+
+    def update_client(self, client, last_name, first_name,
+                      email, phone_number=None, company_name=None):
+        '''
+        Returns updated client data after saving in database.
+        User must be authenticated and be the client's sales contact.
+        '''
+        payload = get_current_user_payload()
+
+        if not is_authenticated(payload):
+            return None
+        
+        if not has_role(payload, 'sales'):
+            return None
+        
+        if client.sales_contact_id != int(payload['sub']):
+            return None # not contact of client
+
+        last_name = clean_required_string(last_name, 'last_name')
+        first_name = clean_required_string(first_name, 'first_name')
+        email = clean_email(email)
+        phone_number = clean_optional_string(phone_number)
+        company_name = clean_optional_string(company_name)
+
+        updates = {
+            'last_name': last_name,
+            'first_name': first_name,
+            'email': email,
+            'phone_number': phone_number,
+            'company_name': company_name,
+        }
+        
+        updated_client = self.client_repository.update_object(
+            object_id=client.id,
+            updates=updates
+        )
+
+        return updated_client
