@@ -15,6 +15,7 @@ from crm.repositories.contract_repository import ContractRepository
 from crm.repositories.event_repository import EventRepository
 
 from crm.controllers.client_controller import ClientController
+from crm.controllers.contract_controller import ContractController
 
 
 @pytest.fixture
@@ -115,6 +116,12 @@ def client_2(session):
 def contract_repo(session):
     contract_repo = ContractRepository(session)
     return contract_repo
+
+
+@pytest.fixture
+def contract_controller(contract_repo):
+    contract_controller = ContractController(contract_repo)
+    return contract_controller
 
 
 @pytest.fixture

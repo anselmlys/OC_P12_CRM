@@ -1,5 +1,8 @@
 from crm.services.auth_service import get_current_user_payload
-from crm.services.authorization_service import is_authenticated
+from crm.services.authorization_service import is_authenticated, has_role
+from crm.services.data_validation_service import (clean_optional_integer,
+                                                  clean_required_integer,
+                                                  clean_boolean)
 
 
 class ContractController:
@@ -11,8 +14,35 @@ class ContractController:
     def get_all_contracts(self):
         payload = get_current_user_payload()
         if not is_authenticated(payload):
-            # Add redirection to login
             return None
+        
         contracts = self.contract_repository.get_all()
-        # Modify to add view
         return contracts
+    
+    def create_contract(self, client_id, total_amount=None,
+                        remaining_amount=None, signed=False):
+        '''
+        Return new contract data after saving in database.
+        User must be authenticated and have the role "management".
+        '''
+        payload = get_current_user_payload()
+
+        if not is_authenticated(payload):
+            return None
+        
+        if not has_role(payload, 'management'):
+            return None
+
+        client_id = clean_required_integer(client_id, 'client_id')
+        total_amount = clean_optional_integer(total_amount, 'total_amount')
+        remaining_amount = clean_optional_integer(remaining_amount, 'remaining_amount')
+        signed = clean_boolean(signed, 'signed')
+
+        contract = self.contract_repository.create_contract(
+            client_id=client_id,
+            total_amount=total_amount,
+            remaining_amount=remaining_amount,
+            signed=signed,
+        )
+
+        return contract

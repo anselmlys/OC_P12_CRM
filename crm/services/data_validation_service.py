@@ -36,3 +36,60 @@ def clean_email(email):
         raise ValueError('email format is invalid')
     
     return cleaned_email
+
+
+def clean_required_integer(value, field_name):
+    '''
+    Convert a required string into an integer and raise an error if it is empty or invalid.
+    '''
+    if value is None:
+        raise ValueError(f'{field_name} is required')
+    
+    value = value.strip()
+    if not value:
+        raise ValueError(f'{field_name} is required')
+
+    try:
+        value = int(value)
+        return value
+    
+    except (ValueError, TypeError):
+        raise ValueError(f'{field_name} must be an integer')
+
+
+def clean_optional_integer(value, field_name):
+    '''
+    Convert an optional string into an integer, return non if it is empty 
+    and raise an error if it is invalid.
+    '''
+    if value is None:
+        return None
+    
+    value = value.strip()
+    if not value:
+        return None
+    
+    try:
+        value = int(value)
+        return value
+    
+    except (ValueError, TypeError):
+        raise ValueError(f'{field_name} must be an integer')
+
+
+def clean_boolean(value, field_name):
+    '''
+    Convert a "yes" or "no" string into a boolean, return none if it is empty 
+    and raise an error if it invalid.
+    '''
+    if value is None:
+        return False
+    
+    value = value.strip().lower()
+    
+    if value == 'yes':
+        return True
+    elif value == 'no':
+        return False
+    else:
+        raise ValueError(f'"{value}" is invalid: {field_name} must be yes or no')

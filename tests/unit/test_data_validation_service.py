@@ -66,3 +66,91 @@ def test_clean_email_raises_error_if_email_format_is_invalid():
 
     with pytest.raises(ValueError):
         data_validation_service.clean_email(email)
+
+
+# Test the function clean_required_integer
+
+def test_clean_required_integer_returns_cleaned_integer():
+    value = ' 5    '
+
+    result = data_validation_service.clean_required_integer(value, 'total_amount')
+
+    assert result == 5
+
+def test_clean_required_integer_raises_error_if_field_is_none():
+    value = None
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_required_integer(value, 'total_amount')
+
+def test_clean_required_integer_raises_error_if_field_is_empty():
+    value = '  '
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_required_integer(value, 'total_amount')
+
+def test_clean_required_integer_raises_error_if_field_is_not_integer():
+    value = ' abc '
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_required_integer(value, 'total_amount')
+
+
+# Test the function clean_optional_integer
+
+def test_clean_optional_integer_returns_cleaned_integer():
+    value = ' 5    '
+
+    result = data_validation_service.clean_optional_integer(value, 'total_amount')
+
+    assert result == 5
+
+def test_clean_optional_integer_returns_none_if_field_is_none():
+    value = None
+
+    result = data_validation_service.clean_optional_integer(value, 'total_amount')
+
+    assert result == None
+
+def test_clean_optional_integer_returns_none_if_field_is_empty():
+    value = '  '
+
+    result = data_validation_service.clean_optional_integer(value, 'total_amount')
+
+    assert result == None
+
+def test_clean_optional_integer_raises_error_if_field_is_not_integer():
+    value = '  abc '
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_optional_integer(value, 'total_amount')
+
+
+# Test the function clean_boolean
+
+def test_clean_boolean_returns_true_if_field_is_yes():
+    value = ' yes  '
+
+    result = data_validation_service.clean_boolean(value, 'signed')
+
+    assert result == True
+
+def test_clean_boolean_returns_false_if_field_is_no():
+    value = ' no  '
+
+    result = data_validation_service.clean_boolean(value, 'signed')
+
+    assert result == False
+
+def test_clean_boolean_returns_false_if_field_is_none():
+    value = None
+
+    result = data_validation_service.clean_boolean(value, 'signed')
+
+    assert result == False
+
+def test_clean_boolean_raises_error_if_field_is_not_yes_or_no_or_none():
+    value = ' abc'
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_boolean(value, 'signed')
