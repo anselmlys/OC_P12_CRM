@@ -83,7 +83,7 @@ def test_create_contract_returns_none_if_user_does_not_have_management_role(
 
 # Test the method update_contract
 
-def test_update_contract_returns_updated_contract_after_saving_in_database(
+def test_update_contract_returns_updated_contract_if_user_has_management_role(
         monkeypatch,
         management_payload,
         contract_controller,
@@ -102,7 +102,44 @@ def test_update_contract_returns_updated_contract_after_saving_in_database(
         signed='yes',
     )
 
+    assert result is not None
     assert result.client_id == client_2.id
+    assert result.total_amount == 2000
+    assert result.remaining_amount == None
+    assert result.signed == True
+
+    updated_contract = session.query(Contract).filter(Contract.id == contract_1.id).first()
+
+    assert updated_contract is not None
+    assert updated_contract.client_id == result.client_id
+    assert updated_contract.total_amount == result.total_amount
+    assert updated_contract.remaining_amount == result.remaining_amount
+    assert updated_contract.signed == result.signed
+
+
+def test_update_contract_returns_updated_contract_if_user_is_client_contact(
+        monkeypatch,
+        sales_payload,
+        contract_controller,
+        contract_1,
+        client_1,
+        session
+    ):
+    monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
+                        lambda: sales_payload)
+    
+    contract_1.client.sales_contact_id = int(sales_payload['sub'])
+
+    result = contract_controller.update_contract(
+        contract=contract_1,
+        client_id=str(client_1.id),
+        total_amount='2000',
+        remaining_amount=None,
+        signed='yes',
+    )
+
+    assert result is not None
+    assert result.client_id == client_1.id
     assert result.total_amount == 2000
     assert result.remaining_amount == None
     assert result.signed == True
@@ -139,7 +176,7 @@ def test_update_contract_returns_none_if_user_is_not_authenticated(
     assert contract_in_db.total_amount is None
 
 
-def test_update_contract_returns_none_if_user_does_not_have_management_role(
+def test_update_contract_returns_none_if_user_does_not_have_management_role_or_is_not_client_contact(
         monkeypatch,
         sales_payload,
         contract_controller,

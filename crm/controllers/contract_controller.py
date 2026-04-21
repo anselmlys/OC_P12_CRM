@@ -51,14 +51,18 @@ class ContractController:
                         remaining_amount=None, signed=False):
         '''
         Return updated contract after saving in database.
-        User must be authenticated and have the role "management".
+        User must be authenticated and have the role "management"
+        or be the client's sales contact.
         '''
         payload = get_current_user_payload()
 
         if not is_authenticated(payload):
             return None
         
-        if not has_role(payload, 'management'):
+        if (
+            not has_role(payload, 'management')
+            and payload['sub'] != str(contract.client.sales_contact_id)
+        ):
             return None
         
         client_id = clean_required_integer(client_id, 'client_id')
