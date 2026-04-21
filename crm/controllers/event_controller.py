@@ -1,5 +1,5 @@
 from crm.services.auth_service import get_current_user_payload
-from crm.services.authorization_service import is_authenticated
+from crm.services.authorization_service import is_authenticated, has_role
 from crm.services.data_validation_service import (clean_optional_date,
                                                   clean_optional_string,
                                                   clean_optional_integer) 
@@ -8,8 +8,9 @@ from crm.services.data_validation_service import (clean_optional_date,
 class EventController:
     '''Handle event-related operations with authentication and authorization checks.'''
 
-    def __init__(self, event_repository):
+    def __init__(self, event_repository, user_repository):
         self.event_repository = event_repository
+        self.user_repository = user_repository
 
     def get_all_events(self):
         payload = get_current_user_payload()
@@ -53,6 +54,34 @@ class EventController:
             location=location,
             number_of_attendees=number_of_attendees,
             notes=notes,
+        )
+
+        return event
+    
+    def assign_support_contact(self, event_id, support_contact_id):
+        '''
+        Update the support contact of an event and returns the updated event.
+        User must be authenticated and have the role "management".
+        New support contact must be a user with the role "support".
+        '''
+        payload = get_current_user_payload()
+
+        if not is_authenticated(payload):
+            return None
+        
+        if not has_role(payload, 'management'):
+            return None
+        
+        support_contact = self.user_repository.get_by_id(support_contact_id)
+        if support_contact is None:
+            return None
+        
+        if support_contact.role != 'support':
+            return None
+
+        event = self.event_repository.update_support_contact(
+            event_id,
+            support_contact_id
         )
 
         return event

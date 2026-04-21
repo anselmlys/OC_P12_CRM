@@ -42,3 +42,21 @@ class EventRepository(BaseRepository):
             raise RuntimeError(f'Database error while saving event data') from e
 
         return event
+    
+    def update_support_contact(self, event_id, new_support_contact_id):
+        '''Update the support contact of an event, then return the updated event.'''
+        try:
+            event = self.get_by_id(event_id)
+            if event is None:
+                return None
+            
+            event.support_contact_id = new_support_contact_id
+            
+            self.session.commit()
+            self.session.refresh(event)
+
+            return event
+        
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise RuntimeError(f'Database error while updating {self.model.__name__} data') from e

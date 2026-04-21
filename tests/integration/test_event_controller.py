@@ -109,3 +109,117 @@ def test_create_event_returns_none_if_contract_is_not_signed(
 
     assert result is None
     assert session.query(Event).count() == 0
+
+
+# Test the method assign_support_contact
+
+def test_assign_support_contact_returns_updated_event(
+        monkeypatch,
+        event_controller,
+        event_1,
+        management_payload,
+        user
+):
+    monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: management_payload)
+    
+    user.role = 'support'
+
+    result = event_controller.assign_support_contact(event_1.id, user.id)
+
+    assert result is not None
+    assert result.support_contact_id == user.id
+
+
+def test_assign_support_contact_returns_none_if_user_not_authenticated(
+        monkeypatch,
+        event_controller,
+        event_1,
+        user,
+        session
+    ):
+        monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: None)
+        
+        result = event_controller.assign_support_contact(event_1.id, user.id)
+
+        assert result is None
+        
+        event = session.query(Event).filter(Event.id == event_1.id).first()
+
+        assert event is not None
+        assert event.support_contact_id is None
+
+
+def test_assign_support_contact_returns_none_if_user_does_not_have_management_role(
+        monkeypatch,
+        event_controller,
+        event_1,
+        sales_payload,
+        user,
+        session
+    ):
+        monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: sales_payload)
+        
+        monkeypatch.setattr('crm.controllers.event_controller.is_authenticated',
+                        lambda payload: True)
+        
+        result = event_controller.assign_support_contact(event_1.id, user.id)
+
+        assert result is None
+        
+        event = session.query(Event).filter(Event.id == event_1.id).first()
+
+        assert event is not None
+        assert event.support_contact_id is None
+
+
+def test_assign_support_contact_returns_none_if_support_contact_not_found(
+        monkeypatch,
+        event_controller,
+        event_1,
+        management_payload,
+        user,
+        session
+    ):
+        monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: management_payload)
+        
+        monkeypatch.setattr('crm.controllers.event_controller.is_authenticated',
+                        lambda payload: True)
+        
+        monkeypatch.setattr(event_controller.user_repository, 'get_by_id', lambda support_contact_id: None)
+        
+        result = event_controller.assign_support_contact(event_1.id, user.id)
+
+        assert result is None
+        
+        event = session.query(Event).filter(Event.id == event_1.id).first()
+
+        assert event is not None
+        assert event.support_contact_id is None
+
+
+def test_assign_support_contact_returns_none_if_user_for_contact_is_not_support(
+        monkeypatch,
+        event_controller,
+        event_1,
+        management_payload,
+        user,
+        session
+    ):
+        monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: management_payload)
+        
+        monkeypatch.setattr('crm.controllers.event_controller.is_authenticated',
+                        lambda payload: True)
+        
+        result = event_controller.assign_support_contact(event_1.id, user.id)
+
+        assert result is None
+        
+        event = session.query(Event).filter(Event.id == event_1.id).first()
+
+        assert event is not None
+        assert event.support_contact_id is None
