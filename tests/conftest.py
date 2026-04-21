@@ -16,6 +16,7 @@ from crm.repositories.event_repository import EventRepository
 
 from crm.controllers.client_controller import ClientController
 from crm.controllers.contract_controller import ContractController
+from crm.controllers.event_controller import EventController
 
 
 @pytest.fixture
@@ -150,6 +151,12 @@ def contract_2(session, client_2):
 def event_repo(session):
     event_repo = EventRepository(session)
     return event_repo
+
+
+@pytest.fixture
+def event_controller(event_repo):
+    event_controller = EventController(event_repo)
+    return event_controller
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@ from crm.services.auth_service import get_current_user_payload
 from crm.services.authorization_service import is_authenticated, has_role
 from crm.services.data_validation_service import (clean_optional_integer,
                                                   clean_required_integer,
-                                                  clean_boolean)
+                                                  clean_optional_boolean)
 
 
 class ContractController:
@@ -36,7 +36,7 @@ class ContractController:
         client_id = clean_required_integer(client_id, 'client_id')
         total_amount = clean_optional_integer(total_amount, 'total_amount')
         remaining_amount = clean_optional_integer(remaining_amount, 'remaining_amount')
-        signed = clean_boolean(signed, 'signed')
+        signed = clean_optional_boolean(signed, 'signed')
 
         contract = self.contract_repository.create_contract(
             client_id=client_id,
@@ -68,7 +68,7 @@ class ContractController:
         client_id = clean_required_integer(client_id, 'client_id')
         total_amount = clean_optional_integer(total_amount, 'total_amount')
         remaining_amount = clean_optional_integer(remaining_amount, 'remaining_amount')
-        signed = clean_boolean(signed, 'signed')
+        signed = clean_optional_boolean(signed, 'signed')
 
         updates = {
             'client_id': client_id,

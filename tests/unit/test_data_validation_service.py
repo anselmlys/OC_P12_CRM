@@ -1,4 +1,5 @@
 import pytest
+from datetime import date
 
 from crm.services import data_validation_service
 
@@ -128,29 +129,59 @@ def test_clean_optional_integer_raises_error_if_field_is_not_integer():
 
 # Test the function clean_boolean
 
-def test_clean_boolean_returns_true_if_field_is_yes():
+def test_clean_optional_boolean_returns_true_if_field_is_yes():
     value = ' yes  '
 
-    result = data_validation_service.clean_boolean(value, 'signed')
+    result = data_validation_service.clean_optional_boolean(value, 'signed')
 
     assert result == True
 
-def test_clean_boolean_returns_false_if_field_is_no():
+def test_clean_optional_boolean_returns_false_if_field_is_no():
     value = ' no  '
 
-    result = data_validation_service.clean_boolean(value, 'signed')
+    result = data_validation_service.clean_optional_boolean(value, 'signed')
 
     assert result == False
 
-def test_clean_boolean_returns_false_if_field_is_none():
+def test_clean_optional_boolean_returns_false_if_field_is_none():
     value = None
 
-    result = data_validation_service.clean_boolean(value, 'signed')
+    result = data_validation_service.clean_optional_boolean(value, 'signed')
 
     assert result == False
 
-def test_clean_boolean_raises_error_if_field_is_not_yes_or_no_or_none():
+def test_clean_optional_boolean_raises_error_if_field_is_not_yes_or_no_or_none():
     value = ' abc'
 
     with pytest.raises(ValueError):
-        data_validation_service.clean_boolean(value, 'signed')
+        data_validation_service.clean_optional_boolean(value, 'signed')
+
+
+# Test the function clean_date
+
+def test_clean_optional_date_returns_cleaned_date():
+    value = '02/02/2022'
+    
+    result = data_validation_service.clean_optional_date(value, 'start_date')
+
+    assert result == date(2022, 2, 2)
+
+def test_clean_optional_date_returns_none_if_value_is_none():
+    value = None
+
+    result = data_validation_service.clean_optional_date(value, 'start_date')
+
+    assert result == None
+
+def test_clean_optional_date_returns_none_if_value_is_empty_string():
+    value = '  '
+
+    result = data_validation_service.clean_optional_date(value, 'start_date')
+
+    assert result == None
+
+def test_clean_optional_date_raises_error_if_value_invalid_format():
+    value = '  02- 05-1996 '
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_optional_date(value, 'start_date')

@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 
 def clean_required_string(value, field_name):
@@ -77,7 +78,7 @@ def clean_optional_integer(value, field_name):
         raise ValueError(f'{field_name} must be an integer')
 
 
-def clean_boolean(value, field_name):
+def clean_optional_boolean(value, field_name):
     '''
     Convert a "yes" or "no" string into a boolean, return none if it is empty 
     and raise an error if it invalid.
@@ -93,3 +94,18 @@ def clean_boolean(value, field_name):
         return False
     else:
         raise ValueError(f'"{value}" is invalid: {field_name} must be yes or no')
+
+
+def clean_optional_date(value, field_name):
+    if value is None:
+        return None
+    
+    value = value.strip()
+    if not value:
+        return None
+    
+    try:
+        value = datetime.strptime(value, '%d/%m/%Y').date()
+        return value
+    except ValueError:
+        raise ValueError(f'"{value}" is invalid: {field_name} must respect the format DD/MM/YYYY')
