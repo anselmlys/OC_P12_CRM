@@ -46,3 +46,33 @@ class ContractController:
         )
 
         return contract
+
+    def update_contract(self, contract, client_id, total_amount=None,
+                        remaining_amount=None, signed=False):
+        '''
+        Return updated contract after saving in database.
+        User must be authenticated and have the role "management".
+        '''
+        payload = get_current_user_payload()
+
+        if not is_authenticated(payload):
+            return None
+        
+        if not has_role(payload, 'management'):
+            return None
+        
+        client_id = clean_required_integer(client_id, 'client_id')
+        total_amount = clean_optional_integer(total_amount, 'total_amount')
+        remaining_amount = clean_optional_integer(remaining_amount, 'remaining_amount')
+        signed = clean_boolean(signed, 'signed')
+
+        updates = {
+            'client_id': client_id,
+            'total_amount': total_amount,
+            'remaining_amount': remaining_amount,
+            'signed': signed,
+        }
+
+        updated_contract = self.contract_repository.update_object(contract.id, updates)
+
+        return updated_contract
