@@ -55,6 +55,17 @@ def management_payload():
 
 
 @pytest.fixture
+def support_payload():
+    now = int(time.time())
+    return {
+        'sub': '3',
+        'role': 'support',
+        'iat': now,
+        'exp': now + 5000,
+    }
+
+
+@pytest.fixture
 def user_repo(session):
     user_repo = UserRepository(session)
     return user_repo
