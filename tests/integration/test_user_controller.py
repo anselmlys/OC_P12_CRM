@@ -1,0 +1,79 @@
+from crm.models.user import User
+from crm.services.password_service import verify_password
+
+
+# Test the method create_user
+
+def test_create_user_returns_new_user(
+        user_controller,
+        monkeypatch,
+        management_payload,
+        session
+):
+    monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
+                        lambda: management_payload)
+    
+    password_entered='mdp123'
+
+    result = user_controller.create_user(
+        email='  user-test@test.com ',
+        last_name='Un  ',
+        first_name='Known',
+        password_entered=password_entered,
+        role='support'
+    )
+
+    assert result is not None
+    assert result.id is not None
+    assert result.email == 'user-test@test.com'
+    assert result.last_name == 'Un'
+    assert result.first_name == 'Known'
+    assert result.role == 'support'
+    assert verify_password(password_entered, result.hashed_password)
+
+    new_user = session.query(User).filter(User.id == result.id).first()
+
+    assert new_user is not None
+    assert new_user.email == result.email
+    assert verify_password(password_entered, new_user.hashed_password)
+
+
+def test_create_user_returns_none_if_user_not_authenticated(
+        monkeypatch,
+        user_controller,
+        session
+    ):
+    monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
+                        lambda: None)
+    
+    result = user_controller.create_user(
+        email='  user-test@test.com ',
+        last_name='Un  ',
+        first_name='Known',
+        password_entered='mdp123',
+        role='support'
+    )
+
+    assert result is None
+    assert session.query(User).count() == 0
+
+
+def test_create_user_returns_none_if_user_does_not_have_management_role(
+        monkeypatch,
+        user_controller,
+        session,
+        sales_payload
+    ):
+    monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
+                        lambda: sales_payload)
+    
+    result = user_controller.create_user(
+        email='  user-test@test.com ',
+        last_name='Un  ',
+        first_name='Known',
+        password_entered='mdp123',
+        role='support'
+    )
+
+    assert result is None
+    assert session.query(User).count() == 0

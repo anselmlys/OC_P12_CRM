@@ -109,3 +109,21 @@ def clean_optional_date(value, field_name):
         return value
     except ValueError:
         raise ValueError(f'"{value}" is invalid: {field_name} must respect the format DD/MM/YYYY')
+
+
+def clean_role(value):
+    if value is None:
+        raise ValueError(f'role is required')
+    
+    value = value.strip()
+    if not value:
+        raise ValueError(f'role is required')
+    
+    if value == 'management':
+        return 'management'
+    elif value == 'support':
+        return 'support'
+    elif value == 'sales':
+        return 'sales'
+    else:
+        raise ValueError(f'{value} is invalid: role must be management or support or sales')

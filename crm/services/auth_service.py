@@ -6,12 +6,11 @@ from crm.services.token_service import (create_access_token, save_token,
                                         delete_token, load_token, decode_access_token)
 
 
-def register_user(session, email, last_name, first_name, password_entered, role):
+def create_user(user_repository, email, last_name, first_name, password_entered, role):
     '''Create a new user with a hashed password and store it in the db.'''
     hashed_password = hash_password(password_entered)
 
-    repo = UserRepository(session)
-    user = repo.create_user(session, email, last_name, first_name, hashed_password, role)
+    user = user_repository.create_user(email, last_name, first_name, hashed_password, role)
     
     return user
 

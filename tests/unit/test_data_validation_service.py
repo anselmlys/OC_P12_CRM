@@ -185,3 +185,45 @@ def test_clean_optional_date_raises_error_if_value_invalid_format():
 
     with pytest.raises(ValueError):
         data_validation_service.clean_optional_date(value, 'start_date')
+
+
+# Test the function clean_role
+
+def test_clean_role_returns_management():
+    value = ' management  '
+
+    result = data_validation_service.clean_role(value)
+
+    assert result == 'management'
+
+def test_clean_role_returns_support():
+    value = ' support  '
+
+    result = data_validation_service.clean_role(value)
+
+    assert result == 'support'
+
+def test_clean_role_returns_sales():
+    value = ' sales  '
+
+    result = data_validation_service.clean_role(value)
+
+    assert result == 'sales'
+
+def test_clean_role_raises_error_if_value_is_none():
+    value = None
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_role(value)
+
+def test_clean_role_raises_error_if_value_is_empty():
+    value = '  '
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_role(value)
+
+def test_clean_role_raises_error_if_value_is_invalid():
+    value = ' abc '
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_role(value)

@@ -1,0 +1,40 @@
+from crm.services.auth_service import create_user, get_current_user_payload
+from crm.services.authorization_service import is_authenticated, has_role
+from crm.services.data_validation_service import (clean_email,
+                                                  clean_required_string,
+                                                  clean_role)
+
+
+class UserController:
+    '''Handle user-related operations with authentication and authorization checks.'''
+
+    def __init__(self, user_repository):
+        self.user_repository = user_repository
+    
+    def create_user(self, email, last_name, first_name, password_entered, role):
+        '''
+        Return new user data after saving in database.
+        User using method must be authenticated and have the role "management".
+        '''
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return None
+        
+        if not has_role(payload, 'management'):
+            return None
+        
+        email = clean_email(email)
+        last_name = clean_required_string(last_name, 'last_name')
+        first_name = clean_required_string(first_name, 'first_name')
+        role = clean_role(role)
+        
+        user = create_user(
+            user_repository=self.user_repository,
+            email=email,
+            last_name=last_name,
+            first_name=first_name,
+            password_entered=password_entered,
+            role=role
+        )
+
+        return user
