@@ -47,3 +47,29 @@ def test_create_contract_rolls_back_on_error(contract_repo, client_1, session, m
         )
     
     assert rollback_called is True
+
+
+# Test the method get_unsigned_contracts
+
+def test_get_unsigned_contracts_returns_list_of_contracts(
+        contract_repo,
+        contract_1,
+        contract_2
+):
+    result = contract_repo.get_unsigned_contracts()
+
+    assert len(result) == 2
+    assert result[0] == contract_1
+
+
+def test_get_unsigned_contracts_returns_empty_list_if_no_unsigned_contracts_found(
+        contract_repo,
+        contract_1,
+        contract_2
+):
+    contract_1.signed = True
+    contract_2.signed = True
+
+    result = contract_repo.get_unsigned_contracts()
+
+    assert result == []

@@ -34,3 +34,11 @@ class ContractRepository(BaseRepository):
             raise RuntimeError(f'Database error while saving contract data') from e
         
         return contract
+    
+    def get_unsigned_contracts(self):
+        try:
+            contracts = self.session.query(Contract).filter(Contract.signed == False).all()
+            return contracts
+        
+        except SQLAlchemyError as e:
+            raise RuntimeError(f'Database error while saving contract data') from e

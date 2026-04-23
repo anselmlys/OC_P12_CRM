@@ -81,6 +81,53 @@ def test_create_contract_returns_none_if_user_does_not_have_management_role(
     assert session.query(Contract).count() == 0
 
 
+# Test the method get_unsigned_contracts
+
+def test_get_unsigned_contracts_returns_list_of_contracts(
+        monkeypatch,
+        sales_payload,
+        contract_1,
+        contract_2,
+        contract_controller
+):
+    monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
+                        lambda: sales_payload)
+    
+    result = contract_controller.get_unsigned_contracts()
+
+    assert len(result) == 2
+    assert result[0] == contract_1
+
+
+def test_get_unsigned_contracts_returns_none_if_user_not_authenticated(
+        monkeypatch,
+        contract_1,
+        contract_2,
+        contract_controller
+):
+    monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
+                        lambda: None)
+    
+    result = contract_controller.get_unsigned_contracts()
+
+    assert result is None
+
+
+def test_get_unsigned_contracts_returns_none_if_user_does_not_have_sales_role(
+        monkeypatch,
+        management_payload,
+        contract_1,
+        contract_2,
+        contract_controller
+):
+    monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
+                        lambda: management_payload)
+    
+    result = contract_controller.get_unsigned_contracts()
+
+    assert result is None
+
+
 # Test the method update_contract
 
 def test_update_contract_returns_updated_contract_if_user_has_management_role(
