@@ -51,6 +51,58 @@ def test_get_events_to_assign_returns_none_if_user_does_have_management_role(
     assert result is None
 
 
+# Test the method get_assigned_events
+
+def test_get_assigned_events_returns_list_of_events(
+        event_controller,
+        event_1,
+        event_2,
+        support_payload,
+        monkeypatch
+):
+    event_1.support_contact_id = int(support_payload['sub'])
+    event_2.support_contact_id = int(support_payload['sub'])
+
+    monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: support_payload)
+    
+    result = event_controller.get_assigned_events()
+
+    assert len(result) == 2
+    assert result[0] == event_1
+
+
+def test_get_assigned_events_returns_none_if_user_not_authenticated(
+        event_controller,
+        event_1,
+        event_2,
+        support_payload,
+        monkeypatch
+):
+    event_1.support_contact_id = int(support_payload['sub'])
+    event_2.support_contact_id = int(support_payload['sub'])
+
+    monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: None)
+    
+    result = event_controller.get_assigned_events()
+
+    assert result is None
+
+
+def test_get_assigned_events_returns_none_if_user_not_authenticated(
+        event_controller,
+        management_payload,
+        monkeypatch
+):
+    monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: management_payload)
+    
+    result = event_controller.get_assigned_events()
+
+    assert result is None
+
+
 # Test the method create_event
 
 def test_create_event_returns_event_after_saving_in_database(

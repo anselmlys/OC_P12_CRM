@@ -34,7 +34,17 @@ class EventController:
         
         events = self.event_repository.get_events_without_support_contact()
         return events
-
+    
+    def get_assigned_events(self):
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return None
+        
+        if not has_role(payload, 'support'):
+            return None
+        
+        events = self.event_repository.get_events_by_support_contact_id(int(payload['sub']))
+        return events
     
     def create_event(self, contract,
                      start_date=None, end_date=None,

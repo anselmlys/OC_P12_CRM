@@ -51,6 +51,15 @@ class EventRepository(BaseRepository):
 
         except SQLAlchemyError as e:
             raise RuntimeError(f'Database error while fetching {self.model.__name__} data') from e
+        
+    def get_events_by_support_contact_id(self, user_id):
+        '''Filter events based on a support contact id and return the list.'''
+        try:
+            events = self.session.query(Event).filter(Event.support_contact_id == user_id).all()
+            return events
+        
+        except SQLAlchemyError as e:
+            raise RuntimeError(f'Database error while fetching {self.model.__name__} data') from e
 
     def update_support_contact(self, event_id, new_support_contact_id):
         '''Update the support contact of an event, then return the updated event.'''

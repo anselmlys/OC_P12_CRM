@@ -78,6 +78,34 @@ def test_get_events_without_support_contact_returns_empty_list_if_no_event_found
     assert result == []
 
 
+# Test the method get_assigned_events
+
+def test_get_events_by_support_contact_id_returns_list_of_events(
+        user,
+        event_repo,
+        event_1,
+        event_2,
+):
+    event_1.support_contact_id = user.id
+    event_2.support_contact_id = user.id
+
+    result = event_repo.get_events_by_support_contact_id(user.id)
+
+    assert len(result) == 2
+    assert result[0] == event_1
+
+
+def test_get_events_by_support_contact_id_returns_empty_list_if_event_not_found(
+        user,
+        event_repo,
+        event_1,
+        event_2,
+):
+    result = event_repo.get_events_by_support_contact_id(user.id)
+
+    assert result == []
+
+
 # Test the method update_support_contact
 
 def test_update_support_contact_returns_updated_event(event_repo, event_1,
