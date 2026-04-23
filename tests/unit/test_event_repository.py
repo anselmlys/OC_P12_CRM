@@ -49,6 +49,35 @@ def test_create_event_rolls_back_on_error(event_repo, contract_1, session, monke
     assert rollback_called is True
 
 
+# Test the method get_events_without_support_contact
+
+def test_get_events_without_support_contact_returns_event_list(
+        event_repo,
+        event_1,
+        event_2,
+    ):
+
+    result = event_repo.get_events_without_support_contact()
+
+    assert len(result) == 2
+    assert result[0] == event_1
+
+def test_get_events_without_support_contact_returns_empty_list_if_no_event_found(
+        event_repo,
+        event_1,
+        event_2,
+        user
+    ):
+
+    event_1.support_contact_id = user.id
+    event_2.support_contact_id = user.id
+
+    result = event_repo.get_events_without_support_contact()
+
+    assert result is not None
+    assert result == []
+
+
 # Test the method update_support_contact
 
 def test_update_support_contact_returns_updated_event(event_repo, event_1,

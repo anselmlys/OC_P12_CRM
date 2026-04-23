@@ -3,6 +3,54 @@ from datetime import date
 from crm.models.event import Event
 
 
+# Test the method get_events_to_assign
+
+def test_get_events_to_assign_returns_list_of_events(
+        event_controller,
+        event_1,
+        event_2,
+        management_payload,
+        monkeypatch
+):
+    monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: management_payload)
+    
+    result = event_controller.get_events_to_assign()
+
+    assert result is not None
+    assert len(result) == 2
+    assert result[0] == event_1
+
+
+def test_get_events_to_assign_returns_none_if_user_not_authenticated(
+        event_controller,
+        event_1,
+        event_2,
+        monkeypatch
+):
+    monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: None)
+    
+    result = event_controller.get_events_to_assign()
+
+    assert result is None
+
+
+def test_get_events_to_assign_returns_none_if_user_does_have_management_role(
+        event_controller,
+        event_1,
+        event_2,
+        sales_payload,
+        monkeypatch
+):
+    monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: sales_payload)
+    
+    result = event_controller.get_events_to_assign()
+
+    assert result is None
+
+
 # Test the method create_event
 
 def test_create_event_returns_event_after_saving_in_database(

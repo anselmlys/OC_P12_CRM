@@ -20,6 +20,22 @@ class EventController:
         events = self.event_repository.get_all()
         return events
     
+    def get_events_to_assign(self):
+        '''
+        Retrieve all events without a support contact.
+        User must be authenticated and have the role "management".
+        '''
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return None
+        
+        if not has_role(payload, 'management'):
+            return None
+        
+        events = self.event_repository.get_events_without_support_contact()
+        return events
+
+    
     def create_event(self, contract,
                      start_date=None, end_date=None,
                      support_contact_id=None, location=None,
