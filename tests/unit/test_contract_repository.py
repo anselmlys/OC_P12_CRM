@@ -73,3 +73,30 @@ def test_get_unsigned_contracts_returns_empty_list_if_no_unsigned_contracts_foun
     result = contract_repo.get_unsigned_contracts()
 
     assert result == []
+
+
+# Test the method get_contracts_with_remaining_amounts
+
+def test_get_contracts_with_remaining_amounts_returns_list_of_contracts(
+        contract_repo,
+        contract_1,
+        contract_2
+):
+    contract_1.remaining_amount = 100
+    contract_2.remaining_amount = 1
+
+    result = contract_repo.get_contracts_with_remaining_amounts()
+
+    assert len(result) == 2
+    assert result[0] == contract_1
+
+
+def test_get_contracts_with_remaining_amounts_returns_empty_list_if_no_contracts_found(
+        contract_repo,
+        contract_1,
+        contract_2
+):
+
+    result = contract_repo.get_contracts_with_remaining_amounts()
+
+    assert result == []

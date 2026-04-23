@@ -48,6 +48,10 @@ class ContractController:
         return contract
     
     def get_unsigned_contracts(self):
+        '''
+        Return a list of all unsigned contracts.
+        User must be authenticated and have the role "sales".
+        '''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return None
@@ -56,6 +60,21 @@ class ContractController:
             return None
         
         contracts = self.contract_repository.get_unsigned_contracts()
+        return contracts
+    
+    def get_unpaid_contracts(self):
+        '''
+        Return a list of all unpaid contracts.
+        User must be authenticated and have the role "sales".
+        '''
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return None
+        
+        if not has_role(payload, 'sales'):
+            return None
+        
+        contracts = self.contract_repository.get_contracts_with_remaining_amounts()
         return contracts
 
     def update_contract(self, contract, client_id, total_amount=None,
