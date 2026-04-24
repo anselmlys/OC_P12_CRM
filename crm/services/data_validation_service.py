@@ -2,6 +2,15 @@ import re
 from datetime import datetime
 
 
+def clean_password(value):
+    '''Validate password format and return it if valid.'''
+    password_format = r'[A-Za-z0-9!?@#$%^&+*=\-_]{8,}'
+    if not re.fullmatch(password_format, value):
+        raise ValueError('password must be at least 8 characters and can include the symbols !?@#$%^&+*=-_')
+    
+    return value    
+
+
 def clean_required_string(value, field_name):
     '''Strip a required string and raise an error if it is empty.'''
     if value is None:
@@ -97,6 +106,9 @@ def clean_optional_boolean(value, field_name):
 
 
 def clean_optional_date(value, field_name):
+    '''
+    Convert a DD/MM/YYYY string into a date and raise an error if it is invalid.
+    '''
     if value is None:
         return None
     
@@ -112,6 +124,7 @@ def clean_optional_date(value, field_name):
 
 
 def clean_role(value):
+    '''Verify role string and raise an error if it invalid.'''
     if value is None:
         raise ValueError(f'role is required')
     

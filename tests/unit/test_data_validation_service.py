@@ -4,6 +4,37 @@ from datetime import date
 from crm.services import data_validation_service
 
 
+# Test the function clean_password
+
+def test_clean_password_returns_valid_password():
+    password = 'AbC09!?@#$%^&+*=-_'
+
+    result = data_validation_service.clean_password(password)
+
+    assert result == password
+
+
+def test_clean_password_raises_error_if_less_than_8_characters():
+    password = 'abcdefr'
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_password(password)
+
+
+def test_clean_password_raises_error_if_contains_spaces():
+    password = 'mot de passe'
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_password(password)
+
+
+def test_clean_password_raises_error_if_empty_string():
+    password = ''
+
+    with pytest.raises(ValueError):
+        data_validation_service.clean_password(password)
+
+
 # Test the function clean_required_string
 
 def test_clean_required_string_returns_cleaned_string():
