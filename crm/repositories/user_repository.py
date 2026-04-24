@@ -36,3 +36,21 @@ class UserRepository(BaseRepository):
             return user
         except SQLAlchemyError as e:
             raise RuntimeError(f'Database error while fetching user with email') from e
+    
+    def update_password(self, user_id, hashed_password):
+        '''Update a user's hashed password and return True if updated, else False.'''
+        user = self.get_by_id(user_id)
+
+        if user is None:
+            return False
+
+        try:
+            user.hashed_password = hashed_password
+            self.session.commit()
+            self.session.refresh(user)
+
+            return True
+        
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise RuntimeError("Database error while updating user password") from e

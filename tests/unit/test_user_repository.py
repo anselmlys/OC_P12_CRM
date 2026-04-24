@@ -56,3 +56,46 @@ def test_create_user_rolls_back_on_error(user_repo, session, monkeypatch):
             hashed_password='hashed',
             role='sales'
         )
+
+
+# Test the method update_password
+
+def test_update_password_returns_true(user, user_repo, session):
+    new_password = 'mot-de-passe-test'
+    
+    result = user_repo.update_password(user.id, new_password)
+
+    assert result is True
+    
+    updated_user = session.query(User).filter(User.id == user.id).first()
+
+    assert updated_user.hashed_password == new_password
+
+
+def test_update_password_returns_false_if_user_not_found(user_repo, session, monkeypatch):
+    new_password = 'mot-de-passe-test'
+    
+    monkeypatch.setattr(user_repo, 'get_by_id', lambda user_id: None)
+    
+    result = user_repo.update_password(1, new_password)
+
+    assert result is False
+
+
+def test_update_password_rolls_back_on_error(user_repo, user, session, monkeypatch):
+    rollback_called = False
+
+    def mock_commit():
+        raise SQLAlchemyError('DB error')
+
+    def mock_rollback():
+        nonlocal rollback_called
+        rollback_called = True
+    
+    monkeypatch.setattr(session, 'commit', mock_commit)
+    monkeypatch.setattr(session, 'rollback', mock_rollback)
+
+    with pytest.raises(RuntimeError):
+        user_repo.update_password(user.id, 'mot-de-passe-test')
+    
+    assert rollback_called is True

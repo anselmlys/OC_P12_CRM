@@ -14,6 +14,7 @@ from crm.repositories.client_repository import ClientRepository
 from crm.repositories.contract_repository import ContractRepository
 from crm.repositories.event_repository import EventRepository
 
+from crm.controllers.auth_controller import AuthController
 from crm.controllers.user_controller import UserController
 from crm.controllers.client_controller import ClientController
 from crm.controllers.contract_controller import ContractController
@@ -73,6 +74,12 @@ def user_repo(session):
 
 
 @pytest.fixture
+def auth_controller(session, user_repo):
+    auth_controller = AuthController(session, user_repo)
+    return auth_controller
+
+
+@pytest.fixture
 def user_controller(user_repo):
     user_controller = UserController(user_repo)
     return user_controller
@@ -84,7 +91,7 @@ def user(session):
         email='employee-test@test.com',
         last_name='Un',
         first_name='Known',
-        hashed_password='hashed',
+        hashed_password='hashed123',
         role='sales'
     )
     session.add(user)
