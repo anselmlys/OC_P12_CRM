@@ -163,3 +163,58 @@ def test_update_user_by_id_returns_none_if_user_does_not_have_management_role(
 
     assert updated_user is not None
     assert updated_user.email == 'employee-test@test.com'
+
+
+# Test the method delete_user_by_id
+
+def test_delete_user_by_id_returns_true_if_deletion_completed(
+        monkeypatch,
+        management_payload,
+        user_controller,
+        user,
+        session
+):
+    monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
+                        lambda: management_payload)
+    
+    result = user_controller.delete_user_by_id(user.id)
+
+    assert result is True
+    assert session.query(User).count() == 0
+
+
+def test_delete_user_by_id_returns_false_if_user_not_authenticated(
+        monkeypatch,
+        user_controller,
+        user,
+        session
+):
+    monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
+                        lambda: None)
+    
+    result = user_controller.delete_user_by_id(user.id)
+
+    assert result is False
+
+    user = session.query(User).filter(User.id == user.id).first()
+
+    assert user is not None
+
+
+def test_delete_user_by_id_returns_false_if_user_does_not_have_management_role(
+        monkeypatch,
+        sales_payload,
+        user_controller,
+        user,
+        session
+):
+    monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
+                        lambda: sales_payload)
+    
+    result = user_controller.delete_user_by_id(user.id)
+
+    assert result is False
+
+    user = session.query(User).filter(User.id == user.id).first()
+
+    assert user is not None

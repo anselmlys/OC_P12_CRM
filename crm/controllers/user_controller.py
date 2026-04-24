@@ -65,3 +65,17 @@ class UserController:
 
         user = self.user_repository.update_object(user_id, updates)
         return user
+    
+    def delete_user_by_id(self, user_id):
+        '''
+        Delete a specific user from the database and return True.
+        User using method must be authenticated and have the role "management".
+        '''
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return False
+        
+        if not has_role(payload, 'management'):
+            return False
+        
+        return self.user_repository.delete_object(user_id)
