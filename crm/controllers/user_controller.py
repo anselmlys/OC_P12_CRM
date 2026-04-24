@@ -38,3 +38,30 @@ class UserController:
         )
 
         return user
+    
+    def update_user_by_id(self, user_id, email, last_name, first_name, role):
+        '''
+        Update data of a specific user, save in database then return it.
+        User using method must be authenticated and have the role "management".
+        '''
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return None
+        
+        if not has_role(payload, 'management'):
+            return None
+        
+        email = clean_email(email)
+        last_name = clean_required_string(last_name, 'last_name')
+        first_name = clean_required_string(first_name, 'first_name')
+        role = clean_role(role)
+
+        updates = {
+            'email': email,
+            'last_name': last_name,
+            'first_name': first_name,
+            'role': role
+        }
+
+        user = self.user_repository.update_object(user_id, updates)
+        return user
