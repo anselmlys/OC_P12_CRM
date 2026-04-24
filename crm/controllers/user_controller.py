@@ -2,7 +2,8 @@ from crm.services.auth_service import create_user, get_current_user_payload
 from crm.services.authorization_service import is_authenticated, has_role
 from crm.services.data_validation_service import (clean_email,
                                                   clean_required_string,
-                                                  clean_role)
+                                                  clean_role,
+                                                  clean_password)
 
 
 class UserController:
@@ -26,6 +27,7 @@ class UserController:
         email = clean_email(email)
         last_name = clean_required_string(last_name, 'last_name')
         first_name = clean_required_string(first_name, 'first_name')
+        password_entered = clean_password(password_entered)
         role = clean_role(role)
         
         user = create_user(

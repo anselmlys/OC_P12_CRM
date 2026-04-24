@@ -13,7 +13,7 @@ def test_create_user_returns_new_user(
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: management_payload)
     
-    password_entered='mdp123'
+    password_entered='motdepasse123'
 
     result = user_controller.create_user(
         email='  user-test@test.com ',
