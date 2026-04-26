@@ -54,7 +54,7 @@ def test_create_user_returns_none_if_user_not_authenticated(
         role='support'
     )
 
-    assert result is None
+    assert result == 'user_not_authenticated'
     assert session.query(User).count() == 0
 
 
@@ -75,7 +75,7 @@ def test_create_user_returns_none_if_user_does_not_have_management_role(
         role='support'
     )
 
-    assert result is None
+    assert result == 'user_not_management_role'
     assert session.query(User).count() == 0
 
 

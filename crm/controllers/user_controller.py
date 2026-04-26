@@ -12,23 +12,23 @@ class UserController:
     def __init__(self, user_repository):
         self.user_repository = user_repository
     
-    def create_user(self, email, last_name, first_name, password_entered, role):
+    def create_user(self, email, last_name, first_name, role, password_entered):
         '''
         Return new user data after saving in database.
         User using method must be authenticated and have the role "management".
         '''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
         if not has_role(payload, 'management'):
-            return None
+            return 'user_not_management_role'
         
         email = clean_email(email)
         last_name = clean_required_string(last_name, 'last_name')
         first_name = clean_required_string(first_name, 'first_name')
-        password_entered = clean_password(password_entered)
         role = clean_role(role)
+        password_entered = clean_password(password_entered)
         
         user = create_user(
             user_repository=self.user_repository,
