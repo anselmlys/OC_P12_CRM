@@ -24,17 +24,17 @@ class AuthController:
         payload = auth_service.get_current_user_payload()
 
         if not is_authenticated(payload):
-            return False
+            return 'user_not_authenticated'
         
         user_id = int(payload['sub'])
         user = self.user_repository.get_by_id(user_id)
 
         if user is None:
-            return False
+            return 'user_not_found'
         
         is_valid = verify_password(old_password_entered, user.hashed_password)
         if not is_valid:
-            return False
+            return 'invalid_password'
         
         new_password_entered = clean_password(new_password_entered)
 

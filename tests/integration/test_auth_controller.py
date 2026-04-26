@@ -37,7 +37,7 @@ def test_change_password_returns_false_if_user_not_authenticated(
 
     result = auth_controller.change_password('old-password', 'test-password')
 
-    assert result is False
+    assert result == 'user_not_authenticated'
 
 
 def test_change_password_returns_false_if_user_not_found(
@@ -50,7 +50,7 @@ def test_change_password_returns_false_if_user_not_found(
 
     result = auth_controller.change_password('old-password', 'test-password')
 
-    assert result is False
+    assert result == 'user_not_found'
 
 
 def test_change_password_returns_false_if_password_invalid(
@@ -67,4 +67,4 @@ def test_change_password_returns_false_if_password_invalid(
 
     result = auth_controller.change_password('invalid', 'test-password')
 
-    assert result is False
+    assert result == 'invalid_password'
