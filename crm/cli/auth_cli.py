@@ -36,3 +36,19 @@ def login(email, password):
 
     finally:
         session.close()
+
+
+@auth.command('logout')
+def logout():
+        auth_controller = AuthController(None, None)
+        auth_controller.logout()
+        click.secho('Logout successful.', fg='green')
+
+
+@auth.command('change-password')
+@click.option('--old-password', prompt='Old password',
+              hide_input=True, confirmation_prompt=False)
+@click.option('--new-password', prompt='New password',
+              hide_input=True, confirmation_prompt=True)
+def change_password(old_password, new_password):
+    session = Session()
