@@ -21,7 +21,7 @@ def test_login_returns_false_if_user_not_found(monkeypatch):
 
     result = auth_service.login(None, 'test@test.com', 'password')
 
-    assert result is False
+    assert result == 'user_not_found'
 
 
 def test_login_returns_false_if_password_is_invalid(monkeypatch):
@@ -36,7 +36,7 @@ def test_login_returns_false_if_password_is_invalid(monkeypatch):
 
     result = auth_service.login(None, 'test@test.com', 'wrong-password')
 
-    assert result is False
+    assert result == 'invalid_password'
 
 
 # Test the function get_current_user_payload

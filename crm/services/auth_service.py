@@ -20,7 +20,7 @@ def login(session, email, password_entered):
     repo = UserRepository(session)
     user = repo.get_by_email(email)
     if user is None:
-        return False
+        return 'user_not_found'
     
     is_valid = verify_password(
         password_entered,
@@ -28,7 +28,7 @@ def login(session, email, password_entered):
     )
 
     if not is_valid:
-        return False
+        return 'invalid_password'
     
     token = create_access_token(user)
     save_token(token)
