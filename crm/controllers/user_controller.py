@@ -70,10 +70,10 @@ class UserController:
         '''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
         if not has_role(payload, 'management'):
-            return None
+            return 'user_not_management_role'
         
         email = clean_email(email)
         last_name = clean_required_string(last_name, 'last_name')

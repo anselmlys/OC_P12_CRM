@@ -13,7 +13,7 @@ def users():
     pass
 
 
-@users.command('create-user')
+@users.command('create')
 @click.option('--email', type=str, required=True)
 @click.option('--last-name', type=str, required=True)
 @click.option('--first-name', type=str, required=True)
@@ -92,6 +92,45 @@ def get_users():
                 )
             
             console.print(table)
+
+    finally:
+        session.close()
+
+
+@users.command('update')
+@click.option('--id', 'user_id', type=int, required=True)
+@click.option('--email', type=str, required=False)
+@click.option('--last-name', type=str, required=False)
+@click.option('--first-name', type=str, required=False)
+@click.option('--role', type=str, required=False)
+def update_user(user_id, email, last_name, first_name, role):
+    session = Session()
+
+    try:
+        user_repository = UserRepository(session)
+        user_controller = UserController(user_repository)
+
+        result = user_controller.update_user_by_id(
+            user_id,
+            email,
+            last_name,
+            first_name,
+            role
+        )
+
+        if result == 'user_not_authenticated':
+            click.secho('Please login first.', fg='red')
+            return
+        
+        elif result == 'user_not_management_role':
+            click.secho('Action restricted to the management team.', fg='red')
+            return
+        
+        else:
+            click.secho('User successfully updated.', fg='green')
+
+    except ValueError as e:
+        click.secho(f'Error: {e}', fg='red')
 
     finally:
         session.close()

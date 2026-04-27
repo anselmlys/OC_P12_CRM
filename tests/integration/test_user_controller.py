@@ -131,7 +131,7 @@ def test_update_user_by_id_returns_none_if_user_not_authenticated(
         role=' management'
     )
 
-    assert result is None
+    assert result == 'user_not_authenticated'
 
     updated_user = session.query(User).filter(User.id == user.id).first()
 
@@ -157,7 +157,7 @@ def test_update_user_by_id_returns_none_if_user_does_not_have_management_role(
         role=' management'
     )
 
-    assert result is None
+    assert result == 'user_not_management_role'
 
     updated_user = session.query(User).filter(User.id == user.id).first()
 
