@@ -41,6 +41,28 @@ class UserController:
 
         return user
     
+    def get_all_users(self):
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return 'user_not_authenticated'
+        
+        if not has_role(payload, 'management'):
+            return 'user_not_management_role'
+
+        users = self.user_repository.get_all()
+        return users
+
+    def get_user_by_email(self, email):
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return 'user_not_authenticated'
+        
+        if not has_role(payload, 'management'):
+            return 'user_not_management_role'
+
+        user = self.user_repository.get_by_email(email)
+        return user
+    
     def update_user_by_id(self, user_id, email, last_name, first_name, role):
         '''
         Update data of a specific user, save in database then return it.
