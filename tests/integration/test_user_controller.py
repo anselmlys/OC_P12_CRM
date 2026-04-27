@@ -194,7 +194,7 @@ def test_delete_user_by_id_returns_false_if_user_not_authenticated(
     
     result = user_controller.delete_user_by_id(user.id)
 
-    assert result is False
+    assert result == 'user_not_authenticated'
 
     user = session.query(User).filter(User.id == user.id).first()
 
@@ -213,7 +213,7 @@ def test_delete_user_by_id_returns_false_if_user_does_not_have_management_role(
     
     result = user_controller.delete_user_by_id(user.id)
 
-    assert result is False
+    assert result == 'user_not_management_role'
 
     user = session.query(User).filter(User.id == user.id).first()
 

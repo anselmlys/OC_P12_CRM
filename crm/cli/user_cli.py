@@ -134,3 +134,29 @@ def update_user(user_id, email, last_name, first_name, role):
 
     finally:
         session.close()
+
+
+@users.command('delete')
+@click.option('--id', 'user_id', type=int, required=True)
+def delete_user(user_id):
+    session = Session()
+
+    try:
+        user_repository = UserRepository(session)
+        user_controller = UserController(user_repository)
+
+        result = user_controller.delete_user_by_id(user_id)
+
+        if result == 'user_not_authenticated':
+            click.secho('Please login first.', fg='red')
+            return
+        
+        elif result == 'user_not_management_role':
+            click.secho('Action restricted to the management team.', fg='red')
+            return
+        
+        else:
+            click.secho('User successfully deleted.', fg='green')
+
+    finally:
+        session.close()

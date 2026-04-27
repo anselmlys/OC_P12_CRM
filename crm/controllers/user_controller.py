@@ -97,9 +97,9 @@ class UserController:
         '''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
-            return False
+            return 'user_not_authenticated'
         
         if not has_role(payload, 'management'):
-            return False
+            return 'user_not_management_role'
         
         return self.user_repository.delete_object(user_id)

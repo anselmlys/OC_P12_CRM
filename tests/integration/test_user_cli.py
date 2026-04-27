@@ -303,3 +303,68 @@ def test_update_user_displays_error_if_value_error_raised(monkeypatch):
 
     assert result.exit_code == 0
     assert 'Error: Invalid email.' in result.output
+
+
+# Test the command delete
+
+def test_delete_user_displays_success(monkeypatch):
+    class FakeUserController:
+        def __init__(self, user_repository):
+            pass
+
+        def delete_user_by_id(self, user_id):
+            return True
+    
+    monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
+
+    runner = CliRunner()
+
+    result = runner.invoke(users, [
+        'delete',
+        '--id', '1'
+    ])
+
+    assert result.exit_code == 0
+    assert 'User successfully deleted.' in result.output
+
+
+def test_delete_user_displays_error_if_user_not_authenticated(monkeypatch):
+    class FakeUserController:
+        def __init__(self, user_repository):
+            pass
+
+        def delete_user_by_id(self, user_id):
+            return 'user_not_authenticated'
+    
+    monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
+
+    runner = CliRunner()
+
+    result = runner.invoke(users, [
+        'delete',
+        '--id', '1'
+    ])
+
+    assert result.exit_code == 0
+    assert 'Please login first.' in result.output
+
+
+def test_delete_user_displays_error_if_user_does_not_have_management_role(monkeypatch):
+    class FakeUserController:
+        def __init__(self, user_repository):
+            pass
+
+        def delete_user_by_id(self, user_id):
+            return 'user_not_management_role'
+    
+    monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
+
+    runner = CliRunner()
+
+    result = runner.invoke(users, [
+        'delete',
+        '--id', '1'
+    ])
+
+    assert result.exit_code == 0
+    assert 'Action restricted to the management team.' in result.output
