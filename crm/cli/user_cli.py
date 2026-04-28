@@ -20,6 +20,7 @@ def users():
 @click.option('--role', type=str, required=True)
 @click.password_option()
 def create_user(email, last_name, first_name, role, password):
+    '''Create new user.'''
     session = Session()
 
     try:
@@ -42,12 +43,16 @@ def create_user(email, last_name, first_name, role, password):
     except (ValueError, TypeError) as e:
         click.secho(f'Error: {e}', fg='red')
 
+    except RuntimeError as e:
+        click.secho(f'Error: {e}', fg='red')
+
     finally:
         session.close()
 
 
 @users.command('list')
 def get_users():
+    '''List all the users.'''
     session = Session()
 
     try:
@@ -93,6 +98,9 @@ def get_users():
             
             console.print(table)
 
+    except RuntimeError as e:
+        click.secho(f'Error: {e}', fg='red')
+
     finally:
         session.close()
 
@@ -104,6 +112,7 @@ def get_users():
 @click.option('--first-name', type=str, required=False)
 @click.option('--role', type=str, required=False)
 def update_user(user_id, email, last_name, first_name, role):
+    '''Update a user by id.'''
     session = Session()
 
     try:
@@ -132,6 +141,9 @@ def update_user(user_id, email, last_name, first_name, role):
     except ValueError as e:
         click.secho(f'Error: {e}', fg='red')
 
+    except RuntimeError as e:
+        click.secho(f'Error: {e}', fg='red')
+
     finally:
         session.close()
 
@@ -139,6 +151,7 @@ def update_user(user_id, email, last_name, first_name, role):
 @users.command('delete')
 @click.option('--id', 'user_id', type=int, required=True)
 def delete_user(user_id):
+    '''Delete a user by id.'''
     session = Session()
 
     try:
@@ -157,6 +170,9 @@ def delete_user(user_id):
         
         else:
             click.secho('User successfully deleted.', fg='green')
+
+    except RuntimeError as e:
+        click.secho(f'Error: {e}', fg='red')
 
     finally:
         session.close()
