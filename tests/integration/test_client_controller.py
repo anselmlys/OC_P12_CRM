@@ -27,7 +27,7 @@ def test_get_all_clients_returns_none_if_user_not_authenticated(monkeypatch, cli
     
     result = client_controller.get_all_clients()
 
-    assert result is None
+    assert result == 'user_not_authenticated'
 
 
 # Test the method create_client
@@ -75,7 +75,7 @@ def test_create_client_returns_none_if_user_not_authenticated(monkeypatch, clien
         email='test@test.com'
     )
 
-    assert result is None
+    assert result == 'user_not_authenticated'
     assert session.query(Client).count() == 0
 
 
@@ -92,7 +92,7 @@ def test_create_client_returns_none_if_user_does_not_have_sales_role(client_cont
         email='test@test.com'
     )
 
-    assert result is None
+    assert result == 'user_not_sales_role'
     assert session.query(Client).count() == 0
 
 
@@ -109,7 +109,7 @@ def test_update_client_returns_updated_client_and_save_in_database(client_contro
     )
 
     result = client_controller.update_client(
-        client=client,
+        client_id=client.id,
         last_name='Doe',
         first_name='Jane',
         email=' janedoe@test.com   ',
@@ -147,7 +147,7 @@ def test_update_client_returns_none_if_user_not_authenticated(monkeypatch, clien
                         lambda: None,)
     
     result = client_controller.update_client(
-        client=client,
+        client_id=client.id,
         last_name='Doe',
         first_name='Jane',
         email=' janedoe@test.com   ',
@@ -155,7 +155,7 @@ def test_update_client_returns_none_if_user_not_authenticated(monkeypatch, clien
         company_name=None,
     )
 
-    assert result is None
+    assert result == 'user_not_authenticated'
 
     client_in_db = session.query(Client).filter(Client.id == client.id).first()
 
@@ -175,7 +175,7 @@ def test_update_client_returns_none_if_user_does_not_have_sales_role(monkeypatch
     sales_payload['role'] = 'management'
     
     result = client_controller.update_client(
-        client=client,
+        client_id=client.id,
         last_name='Doe',
         first_name='Jane',
         email=' janedoe@test.com   ',
@@ -183,7 +183,7 @@ def test_update_client_returns_none_if_user_does_not_have_sales_role(monkeypatch
         company_name=None,
     )
 
-    assert result is None
+    assert result == 'user_not_sales_role'
 
     client_in_db = session.query(Client).filter(Client.id == client.id).first()
 
@@ -203,7 +203,7 @@ def test_update_client_returns_none_if_user_not_contact_of_client(monkeypatch, c
     sales_payload['sub'] = '2'
     
     result = client_controller.update_client(
-        client=client,
+        client_id=client.id,
         last_name='Doe',
         first_name='Jane',
         email=' janedoe@test.com   ',
@@ -211,7 +211,7 @@ def test_update_client_returns_none_if_user_not_contact_of_client(monkeypatch, c
         company_name=None,
     )
 
-    assert result is None
+    assert result == 'user_not_client_contact'
 
     client_in_db = session.query(Client).filter(Client.id == client.id).first()
 

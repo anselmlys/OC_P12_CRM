@@ -15,10 +15,19 @@ class ClientController:
         '''Return a list of all clients. User must be authenticated.'''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
         clients = self.client_repository.get_all()
         return clients
+    
+    def get_client(self, client_id):
+        '''Return a client. User must be authenticated.'''
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return 'user_not_authenticated'
+        
+        client = self.client_repository.get_by_id(client_id)
+        return client
 
     def create_client(self, last_name, first_name,
                       email, phone_number=None, company_name=None):
@@ -29,10 +38,10 @@ class ClientController:
         payload = get_current_user_payload()
 
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
         if not has_role(payload, 'sales'):
-            return None
+            return 'user_not_sales_role'
         
         last_name = clean_required_string(last_name, 'last_name')
         first_name = clean_required_string(first_name, 'first_name')
@@ -51,7 +60,7 @@ class ClientController:
 
         return client
 
-    def update_client(self, client, last_name, first_name,
+    def update_client(self, client_id, last_name, first_name,
                       email, phone_number=None, company_name=None):
         '''
         Returns updated client data after saving in database.
@@ -60,13 +69,17 @@ class ClientController:
         payload = get_current_user_payload()
 
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
         if not has_role(payload, 'sales'):
-            return None
+            return 'user_not_sales_role'
+        
+        client = self.client_repository.get_by_id(client_id)
+        if client is None:
+            return 'client_not_found'
         
         if client.sales_contact_id != int(payload['sub']):
-            return None # not contact of client
+            return 'user_not_client_contact' # not contact of client
 
         last_name = clean_required_string(last_name, 'last_name')
         first_name = clean_required_string(first_name, 'first_name')
