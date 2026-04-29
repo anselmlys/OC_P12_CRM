@@ -12,13 +12,23 @@ class ContractController:
         self.contract_repository = contract_repository
     
     def get_all_contracts(self):
+        '''Return a list of all contracts. User must be authenticated.'''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
         contracts = self.contract_repository.get_all()
         return contracts
     
+    def get_contract(self, contract_id):
+        '''Return a contract. User must be authenticated.'''
+        payload = get_current_user_payload()
+        if not is_authenticated(payload):
+            return 'user_not_authenticated'
+        
+        contract = self.contract_repository.get_by_id(contract_id)
+        return contract
+
     def create_contract(self, client_id, total_amount=None,
                         remaining_amount=None, signed=False):
         '''
@@ -28,10 +38,10 @@ class ContractController:
         payload = get_current_user_payload()
 
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
         if not has_role(payload, 'management'):
-            return None
+            return 'user_not_management_role'
 
         client_id = clean_required_integer(client_id, 'client_id')
         total_amount = clean_optional_integer(total_amount, 'total_amount')
@@ -54,10 +64,10 @@ class ContractController:
         '''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
         if not has_role(payload, 'sales'):
-            return None
+            return 'user_not_sales_role'
         
         contracts = self.contract_repository.get_unsigned_contracts()
         return contracts
@@ -69,15 +79,15 @@ class ContractController:
         '''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
         if not has_role(payload, 'sales'):
-            return None
+            return 'user_not_sales_role'
         
         contracts = self.contract_repository.get_contracts_with_remaining_amounts()
         return contracts
 
-    def update_contract(self, contract, client_id, total_amount=None,
+    def update_contract(self, contract_id, client_id=None, total_amount=None,
                         remaining_amount=None, signed=False):
         '''
         Return updated contract after saving in database.
@@ -87,15 +97,19 @@ class ContractController:
         payload = get_current_user_payload()
 
         if not is_authenticated(payload):
-            return None
+            return 'user_not_authenticated'
         
+        contract = self.contract_repository.get_by_id(contract_id)
+        if contract is None:
+            return 'contract_not_found'
+
         if (
             not has_role(payload, 'management')
             and payload['sub'] != str(contract.client.sales_contact_id)
         ):
-            return None
+            return 'user_not_client_contact'
         
-        client_id = clean_required_integer(client_id, 'client_id')
+        client_id = clean_optional_integer(client_id, 'client_id')
         total_amount = clean_optional_integer(total_amount, 'total_amount')
         remaining_amount = clean_optional_integer(remaining_amount, 'remaining_amount')
         signed = clean_optional_boolean(signed, 'signed')

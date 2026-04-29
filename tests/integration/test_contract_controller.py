@@ -53,7 +53,7 @@ def test_create_contract_returns_none_if_user_not_authenticated(
         signed=' yes ',
     )
 
-    assert result is None
+    assert result == 'user_not_authenticated'
     assert session.query(Contract).count() == 0
 
 
@@ -77,7 +77,7 @@ def test_create_contract_returns_none_if_user_does_not_have_management_role(
         signed=' yes ',
     )
 
-    assert result is None
+    assert result == 'user_not_management_role'
     assert session.query(Contract).count() == 0
 
 
@@ -110,7 +110,7 @@ def test_get_unsigned_contracts_returns_none_if_user_not_authenticated(
     
     result = contract_controller.get_unsigned_contracts()
 
-    assert result is None
+    assert result == 'user_not_authenticated'
 
 
 def test_get_unsigned_contracts_returns_none_if_user_does_not_have_sales_role(
@@ -125,7 +125,7 @@ def test_get_unsigned_contracts_returns_none_if_user_does_not_have_sales_role(
     
     result = contract_controller.get_unsigned_contracts()
 
-    assert result is None
+    assert result == 'user_not_sales_role'
 
 
 # Test the method get_unpaid_contracts
@@ -163,10 +163,10 @@ def test_get_unpaid_contracts_returns_none_if_user_not_authenticated(
     
     result = contract_controller.get_unpaid_contracts()
 
-    assert result is None
+    assert result == 'user_not_authenticated'
 
 
-def test_get_unpaid_contracts_returns_none_if_user_not_authenticated(
+def test_get_unpaid_contracts_returns_none_if_user_does_not_have_sales_role(
         monkeypatch,
         management_payload,
         contract_1,
@@ -181,7 +181,7 @@ def test_get_unpaid_contracts_returns_none_if_user_not_authenticated(
     
     result = contract_controller.get_unpaid_contracts()
 
-    assert result is None
+    assert result == 'user_not_sales_role'
 
 
 # Test the method update_contract
@@ -198,7 +198,7 @@ def test_update_contract_returns_updated_contract_if_user_has_management_role(
                         lambda: management_payload)
     
     result = contract_controller.update_contract(
-        contract=contract_1,
+        contract_id=contract_1.id,
         client_id=str(client_2.id),
         total_amount='2000',
         remaining_amount=None,
@@ -234,7 +234,7 @@ def test_update_contract_returns_updated_contract_if_user_is_client_contact(
     contract_1.client.sales_contact_id = int(sales_payload['sub'])
 
     result = contract_controller.update_contract(
-        contract=contract_1,
+        contract_id=contract_1.id,
         client_id=str(client_1.id),
         total_amount='2000',
         remaining_amount=None,
@@ -267,12 +267,12 @@ def test_update_contract_returns_none_if_user_is_not_authenticated(
                         lambda: None)
     
     result = contract_controller.update_contract(
-        contract=contract_1,
+        contract_id=contract_1.id,
         client_id=str(client_1.id),
         total_amount='2000',
     )
 
-    assert result is None
+    assert result == 'user_not_authenticated'
 
     contract_in_db = session.query(Contract).filter(Contract.id == contract_1.id).first()
 
@@ -294,12 +294,12 @@ def test_update_contract_returns_none_if_user_does_not_have_management_role_or_i
                         lambda payload: True)
     
     result = contract_controller.update_contract(
-        contract=contract_1,
+        contract_id=contract_1.id,
         client_id=str(client_1.id),
         total_amount='2000',
     )
 
-    assert result is None
+    assert result == 'user_not_client_contact'
 
     contract_in_db = session.query(Contract).filter(Contract.id == contract_1.id).first()
 
