@@ -61,13 +61,9 @@ class EventRepository(BaseRepository):
         except SQLAlchemyError as e:
             raise RuntimeError(f'Database error while fetching {self.model.__name__} data') from e
 
-    def update_support_contact(self, event_id, new_support_contact_id):
+    def update_support_contact(self, event, new_support_contact_id):
         '''Update the support contact of an event, then return the updated event.'''
         try:
-            event = self.get_by_id(event_id)
-            if event is None:
-                return None
-            
             event.support_contact_id = new_support_contact_id
             
             self.session.commit()

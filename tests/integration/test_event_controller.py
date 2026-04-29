@@ -33,7 +33,7 @@ def test_get_events_to_assign_returns_none_if_user_not_authenticated(
     
     result = event_controller.get_events_to_assign()
 
-    assert result is None
+    assert result == 'user_not_authenticated'
 
 
 def test_get_events_to_assign_returns_none_if_user_does_have_management_role(
@@ -48,7 +48,7 @@ def test_get_events_to_assign_returns_none_if_user_does_have_management_role(
     
     result = event_controller.get_events_to_assign()
 
-    assert result is None
+    assert result == 'user_not_management_role'
 
 
 # Test the method get_assigned_events
@@ -87,10 +87,10 @@ def test_get_assigned_events_returns_none_if_user_not_authenticated(
     
     result = event_controller.get_assigned_events()
 
-    assert result is None
+    assert result == 'user_not_authenticated'
 
 
-def test_get_assigned_events_returns_none_if_user_not_authenticated(
+def test_get_assigned_events_returns_none_if_user_does_not_have_support_role(
         event_controller,
         management_payload,
         monkeypatch
@@ -100,7 +100,7 @@ def test_get_assigned_events_returns_none_if_user_not_authenticated(
     
     result = event_controller.get_assigned_events()
 
-    assert result is None
+    assert result == 'user_not_support_role'
 
 
 # Test the method create_event
@@ -120,7 +120,7 @@ def test_create_event_returns_event_after_saving_in_database(
     contract_1.signed = True
 
     result = event_controller.create_event(
-        contract=contract_1,
+        contract_id=contract_1.id,
         start_date=' 02/02/2022  ',
         end_date=None,
         support_contact_id=None,
@@ -160,10 +160,10 @@ def test_create_event_returns_none_if_user_is_not_authenticated(
                         lambda: None)
     
     result = event_controller.create_event(
-        contract=contract_1,
+        contract_id=contract_1.id,
     )
 
-    assert result is None
+    assert result == 'user_not_authenticated'
     assert session.query(Event).count() == 0
 
 
@@ -181,10 +181,10 @@ def test_create_event_returns_none_if_user_is_not_client_sales_contact(
                         lambda payload: True)
     
     result = event_controller.create_event(
-        contract=contract_1,
+        contract_id=contract_1.id,
     )
 
-    assert result is None
+    assert result == 'user_not_client_contact'
     assert session.query(Event).count() == 0
 
 
@@ -204,10 +204,10 @@ def test_create_event_returns_none_if_contract_is_not_signed(
     contract_1.client.sales_contact_id = int(sales_payload['sub'])
 
     result = event_controller.create_event(
-        contract=contract_1,
+        contract_id=contract_1.id,
     )
 
-    assert result is None
+    assert result == 'contract_not_signed'
     assert session.query(Event).count() == 0
 
 
@@ -243,7 +243,7 @@ def test_assign_support_contact_returns_none_if_user_not_authenticated(
     
     result = event_controller.assign_support_contact(event_1.id, user.id)
 
-    assert result is None
+    assert result == 'user_not_authenticated'
     
     event = session.query(Event).filter(Event.id == event_1.id).first()
 
@@ -267,7 +267,7 @@ def test_assign_support_contact_returns_none_if_user_does_not_have_management_ro
     
     result = event_controller.assign_support_contact(event_1.id, user.id)
 
-    assert result is None
+    assert result == 'user_not_management_role'
     
     event = session.query(Event).filter(Event.id == event_1.id).first()
 
@@ -293,7 +293,7 @@ def test_assign_support_contact_returns_none_if_support_contact_not_found(
     
     result = event_controller.assign_support_contact(event_1.id, user.id)
 
-    assert result is None
+    assert result == 'support_contact_not_found'
     
     event = session.query(Event).filter(Event.id == event_1.id).first()
 
@@ -317,7 +317,7 @@ def test_assign_support_contact_returns_none_if_user_for_contact_is_not_support(
     
     result = event_controller.assign_support_contact(event_1.id, user.id)
 
-    assert result is None
+    assert result == 'support_contact_not_support_role'
     
     event = session.query(Event).filter(Event.id == event_1.id).first()
 
@@ -375,7 +375,7 @@ def test_update_event_returns_none_if_user_not_authenticated(
         start_date='02/02/2022',
     )
 
-    assert result is None
+    assert result == 'user_not_authenticated'
     
     event = session.query(Event).filter(Event.id == event_1.id).first()
 
@@ -402,7 +402,7 @@ def test_update_event_returns_none_if_event_not_found(
         start_date='02/02/2022',
     )
 
-    assert result is None
+    assert result == 'event_not_found'
     
     event = session.query(Event).filter(Event.id == event_1.id).first()
 
@@ -410,7 +410,7 @@ def test_update_event_returns_none_if_event_not_found(
     assert event.start_date is None
 
 
-def test_update_event_returns_none_if_user_is_not_suport_contact(
+def test_update_event_returns_none_if_user_is_not_support_contact(
         monkeypatch,
         session,
         support_payload,
@@ -425,7 +425,7 @@ def test_update_event_returns_none_if_user_is_not_suport_contact(
         start_date='02/02/2022',
     )
 
-    assert result is None
+    assert result == 'user_not_client_support_contact'
     
     event = session.query(Event).filter(Event.id == event_1.id).first()
 

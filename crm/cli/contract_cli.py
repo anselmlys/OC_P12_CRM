@@ -109,7 +109,7 @@ def get_contracts(unsigned, unpaid):
 @contracts.command('detail')
 @click.option('--id', 'contract_id', type=int, required=True)
 def get_contract(contract_id):
-    '''Display a contract's details using their id.'''
+    '''Display a contract's details using its id.'''
     session = Session()
 
     try:
@@ -135,14 +135,14 @@ def get_contract(contract_id):
                 signed = 'No'
 
             content = Text()
-            content.append(f'ID: {str(result.id)}\n')
-            content.append(f'Client ID: {str(result.client.id)}\n')
-            content.append(f'Client: {result.client.first_name.title()} {result.client.last_name.title()}\n')
-            content.append(f'Total amount: {str(total_amount)}\n')
-            content.append(f'Remaining amount: {str(remaining_amount)}\n')
-            content.append(f'Creation date: {created_at}\n')
-            content.append(f'Signed: {signed}\n')
-            content.append(f'Event ID: {str(result.event.id)}\n')
+            content.append(f'ID:                {str(result.id)}\n')
+            content.append(f'Client ID:         {str(result.client.id)}\n')
+            content.append(f'Client:            {result.client.first_name.title()} {result.client.last_name.title()}\n')
+            content.append(f'Total amount:      {str(total_amount)}\n')
+            content.append(f'Remaining amount:  {str(remaining_amount)}\n')
+            content.append(f'Creation date:     {created_at}\n')
+            content.append(f'Signed:            {signed}\n')
+            content.append(f'Event ID:          {str(result.event.id)}\n')
 
             panel = Panel(
                 content,

@@ -179,8 +179,8 @@ def event_repo(session):
 
 
 @pytest.fixture
-def event_controller(event_repo, user_repo):
-    event_controller = EventController(event_repo, user_repo)
+def event_controller(event_repo, contract_repo, user_repo):
+    event_controller = EventController(event_repo, contract_repo, user_repo)
     return event_controller
 
 

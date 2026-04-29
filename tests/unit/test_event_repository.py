@@ -110,7 +110,7 @@ def test_get_events_by_support_contact_id_returns_empty_list_if_event_not_found(
 
 def test_update_support_contact_returns_updated_event(event_repo, event_1,
                                                       user, session):
-    result = event_repo.update_support_contact(event_1.id, user.id)
+    result = event_repo.update_support_contact(event_1, user.id)
 
     assert result is not None
     assert result.support_contact_id == user.id
@@ -119,19 +119,6 @@ def test_update_support_contact_returns_updated_event(event_repo, event_1,
 
     assert updated_event is not None
     assert updated_event == result
-
-
-def test_update_support_contact_returns_none_if_event_not_found(
-        event_repo,
-        event_1,
-        user,
-        monkeypatch
-    ):
-    monkeypatch.setattr(event_repo, 'get_by_id', lambda event_id: None)
-
-    result = event_repo.update_support_contact(event_1.id, user.id)
-
-    assert result is None
 
 
 def test_update_support_contact_rolls_back_on_error(
@@ -155,7 +142,7 @@ def test_update_support_contact_rolls_back_on_error(
 
     with pytest.raises(RuntimeError):
         event_repo.update_support_contact(
-            event_1.id,
+            event_1,
             user.id
         )
     
