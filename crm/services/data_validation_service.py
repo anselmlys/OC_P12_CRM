@@ -55,7 +55,7 @@ def clean_required_integer(value, field_name):
     if value is None:
         raise ValueError(f'{field_name} is required')
     
-    if value is str:
+    if isinstance(value, str):
         value = value.strip()
 
     if not value:
@@ -71,16 +71,16 @@ def clean_required_integer(value, field_name):
 
 def clean_optional_integer(value, field_name):
     '''
-    Convert an optional string into an integer, return non if it is empty 
+    Convert an optional string into an integer, return none if it is empty 
     and raise an error if it is invalid.
     '''
     if value is None:
         return None
     
-    if value is str:
+    if isinstance(value, str):
         value = value.strip()
-
-    if not value:
+    
+    if value == '':
         return None
     
     try:
