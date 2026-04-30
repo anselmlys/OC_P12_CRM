@@ -92,13 +92,16 @@ def get_contracts(unsigned, unpaid):
             table.add_column('Event ID', justify='left', no_wrap=True)
 
             for contract in result:
-                event = contract.event or '-'
+                if contract.event:
+                    event_id = contract.event.id
+                else:
+                    event_id = '-'
 
                 table.add_row(
                     str(contract.id),
                     str(contract.client.id),
                     f'{contract.client.first_name.title()} {contract.client.last_name.title()}',
-                    str(event.id)
+                    str(event_id)
                 )
 
             console.print(table)
@@ -132,6 +135,11 @@ def get_contract(contract_id):
             total_amount = result.total_amount or '-'
             remaining_amount = result.remaining_amount or '-'
 
+            if result.event:
+                event_id = result.event.id
+            else:
+                event_id = '-'
+
             created_at = result.created_at.strftime('%d/%m/%Y %H:%M')
             if result.signed:
                 signed = 'Yes'
@@ -146,7 +154,7 @@ def get_contract(contract_id):
             content.append(f'Remaining amount:  {str(remaining_amount)}\n')
             content.append(f'Creation date:     {created_at}\n')
             content.append(f'Signed:            {signed}\n')
-            content.append(f'Event ID:          {str(result.event.id)}\n')
+            content.append(f'Event ID:          {str(event_id)}')
 
             panel = Panel(
                 content,
