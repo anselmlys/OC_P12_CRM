@@ -186,13 +186,13 @@ def get_event(event_id):
             console = Console()
 
             start_date = (
-                result.start_date.strftime('%d/%m/%Y %H:%M')
+                result.start_date.strftime('%d/%m/%Y')
                 if result.start_date
                 else '-'
             )
 
             end_date = (
-                result.end_date.strftime('%d/%m/%Y %H:%M')
+                result.end_date.strftime('%d/%m/%Y')
                 if result.end_date
                 else '-'
             )
@@ -215,13 +215,14 @@ def get_event(event_id):
             content.append(f'Contract ID:       {str(result.contract_id)}\n')
             content.append(f'Client ID:         {str(result.contract.client_id)}\n')
             content.append(f'Client:            {result.contract.client.first_name.title()} {result.contract.client.last_name.title()}\n')
-            content.append(f'Client contact:    {client_email}\n{client_phone}\n')
+            content.append(f'Client contact:    {client_email}\n')
+            content.append(f'                   {client_phone}\n')
             content.append(f'Start date:        {start_date}\n')
             content.append(f'End date:          {end_date}\n')
             content.append(f'Support ID:        {support_contact_id}\n')
             content.append(f'Support contact:   {support_contact}\n')
             content.append(f'Location:          {location}\n')
-            content.append(f'Attendees:         {attendees}')
+            content.append(f'Attendees:         {attendees}\n')
             content.append(f'Notes:             {notes}')
 
             panel = Panel(
