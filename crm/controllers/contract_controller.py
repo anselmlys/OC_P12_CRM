@@ -1,3 +1,5 @@
+import sentry_sdk
+
 from crm.services.auth_service import get_current_user_payload
 from crm.services.authorization_service import is_authenticated, has_role
 from crm.services.data_validation_service import (clean_optional_integer,
@@ -103,6 +105,8 @@ class ContractController:
         if contract is None:
             return 'contract_not_found'
 
+        was_signed = contract.signed is True
+
         if (
             not has_role(payload, 'management')
             and payload['sub'] != str(contract.client.sales_contact_id)
@@ -124,5 +128,12 @@ class ContractController:
             updates['signed'] = clean_optional_boolean(signed, 'signed')
 
         updated_contract = self.contract_repository.update_object(contract.id, updates)
+
+        # Send message to sentry if the contract get signed
+        if not was_signed and updated_contract.signed is True:
+            sentry_sdk.capture_message(
+                    f'Contract signed: {contract_id}',
+                    level='info',
+                )
 
         return updated_contract

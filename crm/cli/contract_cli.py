@@ -19,7 +19,7 @@ def contracts():
 @click.option('--client-id', type=int, required=True)
 @click.option('--total-amount', type=int, required=False)
 @click.option('--remaining-amount', type=int, required=False)
-@click.option('--signed', type=str, default='no')
+@click.option('--signed', help='Format: (yes/no)', type=str, default='no')
 def create_contract(client_id, total_amount, remaining_amount, signed):
     '''Create a new contract.'''
     session = Session()
@@ -163,7 +163,7 @@ def get_contract(contract_id):
 @click.option('--client-id', type=int, required=False)
 @click.option('--total-amount', type=int, required=False)
 @click.option('--remaining-amount', type=int, required=False)
-@click.option('--signed', type=str, required=False)
+@click.option('--signed', help='Format: (yes/no)', type=str, required=False)
 def update_contract(contract_id, client_id, total_amount, remaining_amount, signed):
     '''Update a contract by id.'''
     session = Session()
