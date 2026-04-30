@@ -1,3 +1,4 @@
+import sentry_sdk
 import click
 from rich.console import Console
 from rich.table import Table
@@ -23,6 +24,9 @@ def clients():
 @click.option('--company-name', type=str, required=False)
 def create_client(last_name, first_name, email, phone_number, company_name):
     '''Create a new client.'''
+    sentry_sdk.set_tag('command', 'clients.create')
+    sentry_sdk.set_tag('domain', 'clients')
+
     session = Session()
 
     try:
@@ -167,6 +171,9 @@ def get_client(client_id):
 @click.option('--company-name', type=str, required=False)
 def update_client(client_id, last_name, first_name, email, phone_number, company_name):
     '''Update a client by id.'''
+    sentry_sdk.set_tag('command', 'clients.update')
+    sentry_sdk.set_tag('domain', 'clients')
+
     session = Session()
 
     try:

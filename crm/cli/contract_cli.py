@@ -1,3 +1,4 @@
+import sentry_sdk
 import click
 from rich.console import Console
 from rich.table import Table
@@ -22,6 +23,9 @@ def contracts():
 @click.option('--signed', help='Format: (yes/no)', type=str, default='no')
 def create_contract(client_id, total_amount, remaining_amount, signed):
     '''Create a new contract.'''
+    sentry_sdk.set_tag('command', 'contracts.create')
+    sentry_sdk.set_tag('domain', 'contracts')
+
     session = Session()
 
     try:
@@ -166,6 +170,9 @@ def get_contract(contract_id):
 @click.option('--signed', help='Format: (yes/no)', type=str, required=False)
 def update_contract(contract_id, client_id, total_amount, remaining_amount, signed):
     '''Update a contract by id.'''
+    sentry_sdk.set_tag('command', 'contracts.update')
+    sentry_sdk.set_tag('domain', 'contracts')
+
     session = Session()
 
     try:

@@ -1,3 +1,4 @@
+import sentry_sdk
 import click
 from rich.console import Console
 from rich.table import Table
@@ -28,6 +29,9 @@ def events():
 def create_event(contract_id, start_date, end_date, support_contact_id,
                  location, number_of_attendees, notes):
     '''Create a new event.'''
+    sentry_sdk.set_tag('command', 'events.create')
+    sentry_sdk.set_tag('domain', 'events')
+
     session = Session()
 
     try:
@@ -244,6 +248,9 @@ def get_event(event_id):
 def update_event(event_id, start_date, end_date,
                  location, number_of_attendees, notes):
     '''Update an event by id.'''
+    sentry_sdk.set_tag('command', 'events.update')
+    sentry_sdk.set_tag('domain', 'events')
+
     session = Session()
 
     try:

@@ -1,3 +1,4 @@
+import sentry_sdk
 import click
 
 from crm.db import Session
@@ -15,6 +16,9 @@ def auth():
 @click.option('--email', type=str, required=True)
 @click.password_option()
 def login(email, password):
+    sentry_sdk.set_tag('command', 'auth.login')
+    sentry_sdk.set_tag('domain', 'auth')
+
     session = Session()
 
     try:
@@ -51,15 +55,9 @@ def logout():
 @click.option('--new-password', prompt='New password',
               hide_input=True, confirmation_prompt=True)
 def change_password(old_password, new_password):
-    session = Session()
+    sentry_sdk.set_tag('command', 'auth.change_password')
+    sentry_sdk.set_tag('domain', 'auth')
 
-
-@auth.command('change-password')
-@click.option('--old-password', prompt='Old password',
-              hide_input=True, confirmation_prompt=False)
-@click.option('--new-password', prompt='New password',
-              hide_input=True, confirmation_prompt=True)
-def change_password(old_password, new_password):
     session = Session()
 
     try:

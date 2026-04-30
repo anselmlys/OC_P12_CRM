@@ -22,6 +22,9 @@ def users():
 @click.password_option()
 def create_user(email, last_name, first_name, role, password):
     '''Create new user.'''
+    sentry_sdk.set_tag('command', 'users.create')
+    sentry_sdk.set_tag('domain', 'users')
+
     session = Session()
 
     try:
@@ -120,6 +123,9 @@ def get_users():
 @click.option('--role', type=str, required=False)
 def update_user(user_id, email, last_name, first_name, role):
     '''Update a user by id.'''
+    sentry_sdk.set_tag('command', 'users.update')
+    sentry_sdk.set_tag('domain', 'users')
+
     session = Session()
 
     try:
@@ -165,6 +171,9 @@ def update_user(user_id, email, last_name, first_name, role):
 @click.option('--id', 'user_id', type=int, required=True)
 def delete_user(user_id):
     '''Delete a user by id.'''
+    sentry_sdk.set_tag('command', 'users.delete')
+    sentry_sdk.set_tag('domain', 'users')
+
     session = Session()
 
     try:
