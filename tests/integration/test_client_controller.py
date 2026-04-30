@@ -133,6 +133,37 @@ def test_update_client_returns_updated_client_and_save_in_database(client_contro
     assert updated_client.company_name == result.company_name
 
 
+def test_update_client_returns_unchanged_client_if_update_none(client_controller, client_1, sales_payload, monkeypatch, session):
+    monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
+                        lambda: sales_payload,)
+    
+    client_1.sales_contact_id = int(sales_payload['sub'])
+
+    result = client_controller.update_client(
+        client_id=client_1.id,
+        last_name=None,
+        first_name=None,
+        email=None,
+        phone_number=None,
+        company_name=None,
+    )
+
+    assert result.last_name == 'Doe'
+    assert result.first_name == 'Jane'
+    assert result.email == 'test@test.com'
+    assert result.phone_number is None
+    assert result.company_name is None
+
+    updated_client = session.query(Client).filter(Client.id == client_1.id).first()
+
+    assert updated_client is not None 
+    assert updated_client.last_name == result.last_name
+    assert updated_client.first_name == result.first_name
+    assert updated_client.email == result.email
+    assert updated_client.phone_number == result.phone_number
+    assert updated_client.company_name == result.company_name
+
+
 def test_update_client_returns_none_if_user_not_authenticated(monkeypatch, client_controller, sales_payload, session):
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: sales_payload,)

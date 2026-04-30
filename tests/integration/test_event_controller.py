@@ -361,6 +361,40 @@ def test_update_event_returns_updated_event_after_saving_in_database(
     assert updated_event.start_date == result.start_date
 
 
+def test_update_event_returns_unchanged_event_if_update_none(
+        monkeypatch,
+        support_payload,
+        event_1,
+        event_controller,
+        contract_2,
+        session
+    ):
+    monkeypatch.setattr('crm.controllers.event_controller.get_current_user_payload',
+                        lambda: support_payload)
+    
+    event_1.support_contact_id = int(support_payload['sub'])
+
+    result = event_controller.update_event(
+        event_1.id,
+        start_date=None,
+        location=None,
+        number_of_attendees=None,
+        notes=None,
+    )
+
+    assert result is not None
+    assert result.start_date is None
+    assert result.end_date is None
+    assert result.location is None
+    assert result.number_of_attendees is None
+    assert result.notes is None
+
+    updated_event = session.query(Event).filter(Event.id == event_1.id).first()
+
+    assert updated_event is not None
+    assert updated_event.start_date == result.start_date
+
+
 def test_update_event_returns_none_if_user_not_authenticated(
         monkeypatch,
         session,

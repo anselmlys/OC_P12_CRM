@@ -220,6 +220,40 @@ def test_update_contract_returns_updated_contract_if_user_has_management_role(
     assert updated_contract.signed == result.signed
 
 
+def test_update_contract_returns_unchanged_contract_if_update_none(
+        monkeypatch,
+        management_payload,
+        contract_controller,
+        contract_1,
+        client_1,
+        session
+    ):
+    monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
+                        lambda: management_payload)
+    
+    result = contract_controller.update_contract(
+        contract_id=contract_1.id,
+        client_id=None,
+        total_amount=None,
+        remaining_amount=None,
+        signed=None,
+    )
+
+    assert result is not None
+    assert result.client_id == client_1.id
+    assert result.total_amount is None
+    assert result.remaining_amount is None
+    assert result.signed == False
+
+    updated_contract = session.query(Contract).filter(Contract.id == contract_1.id).first()
+
+    assert updated_contract is not None
+    assert updated_contract.client_id == result.client_id
+    assert updated_contract.total_amount == result.total_amount
+    assert updated_contract.remaining_amount == result.remaining_amount
+    assert updated_contract.signed == result.signed
+
+
 def test_update_contract_returns_updated_contract_if_user_is_client_contact(
         monkeypatch,
         sales_payload,

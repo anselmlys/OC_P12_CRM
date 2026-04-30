@@ -153,19 +153,22 @@ class EventController:
         if event.support_contact_id != int(payload['sub']):
             return 'user_not_client_support_contact'
         
-        start_date = clean_optional_date(start_date, 'start_date')
-        end_date = clean_optional_date(end_date, 'end_date')
-        location = clean_optional_string(location)
-        number_of_attendees = clean_optional_integer(number_of_attendees, 'number_of_attendees')
-        notes = clean_optional_string(notes)
+        updates = {}
+        
+        if start_date is not None:
+            updates['start_date'] = clean_optional_date(start_date, 'start_date')
 
-        updates = {
-            'start_date': start_date,
-            'end_date': end_date,
-            'location': location,
-            'number_of_attendees': number_of_attendees,
-            'notes': notes,
-        }
+        if end_date is not None:
+            updates['end_date'] = clean_optional_date(end_date, 'end_date')
+        
+        if location is not None:
+            updates['location'] = clean_optional_string(location)
+    
+        if number_of_attendees is not None:
+            updates['number_of_attendees'] = clean_optional_integer(number_of_attendees, 'number_of_attendees')
+        
+        if notes is not None:
+            updates['notes'] = clean_optional_string(notes)
 
         updated_event = self.event_repository.update_object(event_id, updates)
 

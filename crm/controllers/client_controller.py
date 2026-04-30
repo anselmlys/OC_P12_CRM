@@ -60,8 +60,8 @@ class ClientController:
 
         return client
 
-    def update_client(self, client_id, last_name, first_name,
-                      email, phone_number=None, company_name=None):
+    def update_client(self, client_id, last_name=None, first_name=None,
+                      email=None, phone_number=None, company_name=None):
         '''
         Returns updated client data after saving in database.
         User must be authenticated and be the client's sales contact.
@@ -80,20 +80,23 @@ class ClientController:
         
         if client.sales_contact_id != int(payload['sub']):
             return 'user_not_client_contact' # not contact of client
+        
+        updates = {}
 
-        last_name = clean_required_string(last_name, 'last_name')
-        first_name = clean_required_string(first_name, 'first_name')
-        email = clean_email(email)
-        phone_number = clean_optional_string(phone_number)
-        company_name = clean_optional_string(company_name)
+        if last_name is not None:
+            updates['last_name'] = clean_required_string(last_name, 'last_name')
+        
+        if first_name is not None:
+            updates['first_name'] = clean_required_string(first_name, 'first_name')
 
-        updates = {
-            'last_name': last_name,
-            'first_name': first_name,
-            'email': email,
-            'phone_number': phone_number,
-            'company_name': company_name,
-        }
+        if email is not None:
+            updates['email'] = clean_email(email)
+        
+        if phone_number is not None:
+            updates['phone_number'] = clean_optional_string(phone_number)
+        
+        if company_name is not None:
+            updates['company_name'] = clean_optional_string(company_name)
         
         updated_client = self.client_repository.update_object(
             object_id=client.id,

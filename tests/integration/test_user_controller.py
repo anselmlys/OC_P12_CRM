@@ -114,6 +114,39 @@ def test_update_user_by_id_returns_updated_user_data(
     assert updated_user.role == result.role
 
 
+def test_update_user_by_id_returns_unchanged_user_if_update_none(
+        monkeypatch,
+        management_payload,
+        user,
+        user_controller,
+        session
+):
+    monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
+                        lambda: management_payload)
+    
+    result = user_controller.update_user_by_id(
+        user_id=user.id,
+        email=None,
+        last_name=None,
+        first_name=None,
+        role=None
+    )
+
+    assert result is not None
+    assert result.email == 'employee-test@test.com'
+    assert result.last_name == 'Un'
+    assert result.first_name == 'Known'
+    assert result.role == 'sales'
+
+    updated_user = session.query(User).filter(User.id == user.id).first()
+
+    assert updated_user is not None
+    assert updated_user.email == result.email
+    assert updated_user.last_name == result.last_name
+    assert updated_user.first_name == result.first_name
+    assert updated_user.role == result.role
+
+
 def test_update_user_by_id_returns_none_if_user_not_authenticated(
         monkeypatch,
         user,
