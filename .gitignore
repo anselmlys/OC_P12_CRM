@@ -4,3 +4,5 @@ database/
 __pycache__/
 .coverage
 .session_token
+.pytest_cache/
+htmlcov/
