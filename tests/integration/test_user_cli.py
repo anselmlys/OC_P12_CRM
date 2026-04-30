@@ -6,12 +6,15 @@ from crm.cli.user_cli import users
 # Test the command create-user
 
 def test_create_user_displays_success(monkeypatch):
+    class FakeUser:
+        id = 1
+
     class FakeUserController:
         def __init__(self, user_repository):
             pass
 
         def create_user(self, email, last_name, first_name, role, password):
-            return True
+            return FakeUser()
     
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
@@ -193,6 +196,9 @@ def test_get_users_displays_error_if_user_does_not_have_management_role(monkeypa
 # Test the command update
 
 def test_update_user_displays_success(monkeypatch):
+    class FakeUser:
+        id = 1
+
     class FakeUserController:
         def __init__(self, user_repository):
             pass
@@ -203,7 +209,7 @@ def test_update_user_displays_success(monkeypatch):
             assert last_name == 'Doe'
             assert first_name is None
             assert role == 'sales'
-            return True
+            return FakeUser()
     
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 

@@ -1,3 +1,4 @@
+import sentry_sdk
 import click
 from rich.console import Console
 from rich.table import Table
@@ -39,6 +40,12 @@ def create_user(email, last_name, first_name, role, password):
         
         else:
             click.secho('User successfully created.', fg='green')
+
+            # Log user creation in Sentry
+            sentry_sdk.capture_message(
+                f'User created: {result.id}',
+                level='info',
+            )
 
     except (ValueError, TypeError) as e:
         click.secho(f'Error: {e}', fg='red')
@@ -137,6 +144,12 @@ def update_user(user_id, email, last_name, first_name, role):
         
         else:
             click.secho('User successfully updated.', fg='green')
+
+            # Log user update in Sentry
+            sentry_sdk.capture_message(
+                f'User updated: {result.id}',
+                level='info',
+            )
 
     except ValueError as e:
         click.secho(f'Error: {e}', fg='red')
