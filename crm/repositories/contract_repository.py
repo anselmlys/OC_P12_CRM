@@ -38,7 +38,7 @@ class ContractRepository(BaseRepository):
     def get_unsigned_contracts(self):
         '''Return a list of all unsigned contracts.'''
         try:
-            contracts = self.session.query(Contract).filter(Contract.signed is False).all()
+            contracts = self.session.query(Contract).filter(Contract.signed.is_(False)).all()
             return contracts
 
         except SQLAlchemyError as e:

@@ -46,7 +46,7 @@ class EventRepository(BaseRepository):
     def get_events_without_support_contact(self):
         '''Return a list of all events to which no support contact has been assigned.'''
         try:
-            events = self.session.query(Event).filter(Event.support_contact_id is None).all()
+            events = self.session.query(Event).filter(Event.support_contact_id.is_(None)).all()
             return events
 
         except SQLAlchemyError as e:
