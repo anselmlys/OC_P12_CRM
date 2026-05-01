@@ -1,5 +1,6 @@
 import click
 
+from crm.cli.db_cli import db
 from crm.cli.auth_cli import auth
 from crm.cli.user_cli import users
 from crm.cli.client_cli import clients
@@ -13,6 +14,7 @@ def cli():
     pass
 
 
+cli.add_command(db)
 cli.add_command(auth)
 cli.add_command(users)
 cli.add_command(clients)
