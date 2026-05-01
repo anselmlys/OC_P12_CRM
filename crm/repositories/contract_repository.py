@@ -31,24 +31,24 @@ class ContractRepository(BaseRepository):
 
         except SQLAlchemyError as e:
             self.session.rollback()
-            raise RuntimeError(f'Database error while saving contract data') from e
-        
+            raise RuntimeError('Database error while saving contract data') from e
+
         return contract
-    
+
     def get_unsigned_contracts(self):
         '''Return a list of all unsigned contracts.'''
         try:
-            contracts = self.session.query(Contract).filter(Contract.signed == False).all()
+            contracts = self.session.query(Contract).filter(Contract.signed is False).all()
             return contracts
-        
+
         except SQLAlchemyError as e:
-            raise RuntimeError(f'Database error while saving contract data') from e
+            raise RuntimeError('Database error while saving contract data') from e
 
     def get_contracts_with_remaining_amounts(self):
         '''Return a list of all contracts with remaining amounts above 0.'''
         try:
             contracts = self.session.query(Contract).filter(Contract.remaining_amount > 0).all()
             return contracts
-        
+
         except SQLAlchemyError as e:
-            raise RuntimeError(f'Database error while saving contract data') from e
+            raise RuntimeError('Database error while saving contract data') from e

@@ -153,7 +153,7 @@ def contract_controller(contract_repo):
 @pytest.fixture
 def contract_1(session, client_1):
     contract_1 = Contract(
-        client_id = client_1.id
+        client_id=client_1.id
     )
     session.add(contract_1)
     session.commit()
@@ -164,7 +164,7 @@ def contract_1(session, client_1):
 @pytest.fixture
 def contract_2(session, client_2):
     contract_2 = Contract(
-        client_id = client_2.id
+        client_id=client_2.id
     )
     session.add(contract_2)
     session.commit()
@@ -187,7 +187,7 @@ def event_controller(event_repo, contract_repo, user_repo):
 @pytest.fixture
 def event_1(session, contract_1):
     event_1 = Event(
-        contract_id = contract_1.id,
+        contract_id=contract_1.id,
     )
     session.add(event_1)
     session.commit()
@@ -198,7 +198,7 @@ def event_1(session, contract_1):
 @pytest.fixture
 def event_2(session, contract_2):
     event_2 = Event(
-        contract_id = contract_2.id,
+        contract_id=contract_2.id,
     )
     session.add(event_2)
     session.commit()

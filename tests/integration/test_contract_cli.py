@@ -13,7 +13,7 @@ def test_create_contract_displays_success(monkeypatch):
 
         def create_contract(self, client_id, total_amount, remaining_amount, signed):
             return True
-    
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -39,7 +39,7 @@ def test_create_contract_displays_error_if_user_not_authenticated(monkeypatch):
 
         def create_contract(self, client_id, total_amount, remaining_amount, signed):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -65,7 +65,7 @@ def test_create_contract_displays_error_if_user_does_not_have_management_role(mo
 
         def create_contract(self, client_id, total_amount, remaining_amount, signed):
             return 'user_not_management_role'
-    
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -91,7 +91,7 @@ def test_create_contract_displays_error_if_value_error_raised(monkeypatch):
 
         def create_contract(self, client_id, total_amount, remaining_amount, signed):
             raise ValueError('Invalid value.')
-    
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -117,7 +117,7 @@ def test_create_contract_displays_error_if_runtime_error_raised(monkeypatch):
 
         def create_contract(self, client_id, total_amount, remaining_amount, signed):
             raise RuntimeError('Session has crashed.')
-    
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -143,23 +143,23 @@ def test_get_contracts_displays_list_of_contracts(monkeypatch):
         id = 2
         first_name = 'Un'
         last_name = 'Known'
-    
+
     class FakeEvent:
         id = 3
-    
+
     class FakeContract:
         def __init__(self):
             self.id = 1
             self.client = FakeClient()
             self.event = FakeEvent()
-    
+
     class FakeContractController:
         def __init__(self, contract_repository):
             pass
 
         def get_all_contracts(self):
             return [FakeContract(),]
-        
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -172,29 +172,30 @@ def test_get_contracts_displays_list_of_contracts(monkeypatch):
     assert 'Un Known' in result.output
     assert '3' in result.output
 
+
 def test_get_contracts_displays_list_of_unsigned_contracts(monkeypatch):
     class FakeClient:
         id = 2
         first_name = 'Un'
         last_name = 'Known'
-    
+
     class FakeEvent:
         id = 3
-    
+
     class FakeContract:
         def __init__(self):
             self.id = 1
             self.client = FakeClient()
             self.event = FakeEvent()
             self.signed = True
-    
+
     class FakeContractController:
         def __init__(self, contract_repository):
             pass
 
         def get_unsigned_contracts(self):
             return [FakeContract(),]
-        
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -215,7 +216,7 @@ def test_get_contracts_displays_error_if_user_not_authenticated(monkeypatch):
 
         def get_all_contracts(self):
             return 'user_not_authenticated'
-        
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -233,7 +234,7 @@ def test_get_contracts_displays_error_if_user_does_not_have_sales_role(monkeypat
 
         def get_all_contracts(self):
             return 'user_not_sales_role'
-        
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -246,15 +247,15 @@ def test_get_contracts_displays_error_if_user_does_not_have_sales_role(monkeypat
 
 # Test the command detail
 
-def test_get_contracts_displays_contract_detail(monkeypatch):
+def test_get_contract_displays_contract_detail(monkeypatch):
     class FakeClient:
         id = 2
         first_name = 'Un'
         last_name = 'Known'
-    
+
     class FakeEvent:
         id = 3
-    
+
     class FakeContract:
         def __init__(self):
             self.id = 1
@@ -264,14 +265,14 @@ def test_get_contracts_displays_contract_detail(monkeypatch):
             self.remaining_amount = None
             self.created_at = datetime(2026, 2, 2, 10, 0, tzinfo=timezone.utc)
             self.signed = True
-    
+
     class FakeContractController:
         def __init__(self, contract_repository):
             pass
 
         def get_contract(self, contract_id):
             return FakeContract()
-        
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -289,14 +290,14 @@ def test_get_contracts_displays_contract_detail(monkeypatch):
     assert '3' in result.output
 
 
-def test_get_contracts_displays_error_if_user_not_authenticated(monkeypatch):
+def test_get_contract_displays_error_if_user_not_authenticated(monkeypatch):
     class FakeContractController:
         def __init__(self, contract_repository):
             pass
 
         def get_contract(self, contract_id):
             return 'user_not_authenticated'
-        
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -320,7 +321,7 @@ def test_update_contract_displays_success(monkeypatch):
             assert remaining_amount is None
             assert signed == 'yes'
             return True
-    
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -347,7 +348,7 @@ def test_update_contract_displays_error_if_user_not_authenticated(monkeypatch):
 
         def update_contract(self, contract_id, client_id, total_amount, remaining_amount, signed):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -374,7 +375,7 @@ def test_update_contract_displays_error_if_contract_not_found(monkeypatch):
 
         def update_contract(self, contract_id, client_id, total_amount, remaining_amount, signed):
             return 'contract_not_found'
-    
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()
@@ -401,7 +402,7 @@ def test_update_contract_displays_error_if_user_not_client_contact(monkeypatch):
 
         def update_contract(self, contract_id, client_id, total_amount, remaining_amount, signed):
             return 'user_not_client_contact'
-    
+
     monkeypatch.setattr('crm.cli.contract_cli.ContractController', FakeContractController)
 
     runner = CliRunner()

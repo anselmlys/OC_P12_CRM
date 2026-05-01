@@ -1,5 +1,4 @@
 import pytest
-from sqlalchemy.exc import SQLAlchemyError
 
 from crm.models.client import Client
 
@@ -29,6 +28,7 @@ def test_get_by_id_returns_a_client(client_repo, client_1, client_2):
     assert result is not None
     assert result.id == client_2.id
     assert result.email == client_2.email
+
 
 def test_get_by_id_returns_none_if_not_found(client_repo):
     result = client_repo.get_by_id(object_id=1)
@@ -61,7 +61,7 @@ def test_update_client_returns_none_if_client_not_found(client_repo):
         'last_name': 'Dooe',
         'first_name': 'Jaane',
     }
-    
+
     result = client_repo.update_object(1, updates)
 
     assert result is None
@@ -92,4 +92,3 @@ def test_delete_client_returns_false_if_client_not_found(client_repo):
     result = client_repo.delete_object(1)
 
     assert result is False
-

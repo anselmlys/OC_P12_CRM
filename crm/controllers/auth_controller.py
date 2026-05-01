@@ -10,32 +10,32 @@ class AuthController:
     def __init__(self, session, user_repository):
         self.session = session
         self.user_repository = user_repository
-    
+
     def login(self, email, password_entered):
         '''Authenticate a user and return True if login succeeds.'''
         return auth_service.login(self.session, email, password_entered)
-    
+
     def logout(self):
         '''Log out the current user'''
         auth_service.logout()
-    
+
     def change_password(self, old_password_entered, new_password_entered):
         '''Change the current user's password if the old password is valid.'''
         payload = auth_service.get_current_user_payload()
 
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         user_id = int(payload['sub'])
         user = self.user_repository.get_by_id(user_id)
 
         if user is None:
             return 'user_not_found'
-        
+
         is_valid = verify_password(old_password_entered, user.hashed_password)
         if not is_valid:
             return 'invalid_password'
-        
+
         new_password_entered = clean_password(new_password_entered)
 
         hashed_password = hash_password(new_password_entered)

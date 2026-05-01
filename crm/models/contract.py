@@ -4,8 +4,9 @@ from sqlalchemy.orm import relationship
 
 from crm.models.base import Base
 
+
 class Contract(Base):
-    __tablename__= 'contract'
+    __tablename__ = 'contract'
 
     id = Column(Integer, primary_key=True)
     client_id = Column(Integer, ForeignKey('client.id', ondelete='RESTRICT'), nullable=False)

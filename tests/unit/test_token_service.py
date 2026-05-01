@@ -1,6 +1,5 @@
 import jwt
 import pytest
-from pathlib import Path
 
 from crm.services import token_service
 
@@ -10,9 +9,11 @@ class DummyUser:
         self.id = id
         self.role = role
 
+
 @pytest.fixture
 def set_test_secret_key(monkeypatch):
     monkeypatch.setattr(token_service, 'SECRET_KEY', 'test-secret-key')
+
 
 @pytest.fixture
 def token_file(tmp_path, monkeypatch):
@@ -44,7 +45,10 @@ def test_create_access_token_raises_error_if_secret_key_missing(monkeypatch):
 
     user = DummyUser(1, 'sales')
 
-    with pytest.raises(ValueError, match='JWT_SECRET_KEY is missing from .env file.'):
+    with pytest.raises(
+        ValueError,
+        match='JWT_SECRET_KEY is missing from .env file.'
+    ):
         token_service.create_access_token(user)
 
 

@@ -32,16 +32,17 @@ def create_contract(client_id, total_amount, remaining_amount, signed):
         contract_repository = ContractRepository(session)
         contract_controller = ContractController(contract_repository)
 
-        result = contract_controller.create_contract(client_id, total_amount, remaining_amount, signed)
+        result = contract_controller.create_contract(
+            client_id, total_amount, remaining_amount, signed)
 
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         if result == 'user_not_management_role':
             click.secho('Action restricted to the management team.', fg='red')
             return
-        
+
         else:
             click.secho('Contract successfully created.', fg='green')
 
@@ -76,11 +77,11 @@ def get_contracts(unsigned, unpaid):
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         if result == 'user_not_sales_role':
             click.secho('Action restricted to the sales team.', fg='red')
             return
-        
+
         else:
             console = Console()
 
@@ -128,7 +129,7 @@ def get_contract(contract_id):
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         else:
             console = Console()
 
@@ -149,7 +150,8 @@ def get_contract(contract_id):
             content = Text()
             content.append(f'ID:                {str(result.id)}\n')
             content.append(f'Client ID:         {str(result.client.id)}\n')
-            content.append(f'Client:            {result.client.first_name.title()} {result.client.last_name.title()}\n')
+            content.append(f'Client:            {result.client.first_name.title()} '
+                           f'{result.client.last_name.title()}\n')
             content.append(f'Total amount:      {str(total_amount)}\n')
             content.append(f'Remaining amount:  {str(remaining_amount)}\n')
             content.append(f'Creation date:     {created_at}\n')
@@ -187,20 +189,21 @@ def update_contract(contract_id, client_id, total_amount, remaining_amount, sign
         contract_repository = ContractRepository(session)
         contract_controller = ContractController(contract_repository)
 
-        result = contract_controller.update_contract(contract_id, client_id, total_amount, remaining_amount, signed)
+        result = contract_controller.update_contract(
+            contract_id, client_id, total_amount, remaining_amount, signed)
 
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         if result == 'contract_not_found':
             click.secho('Contract not found.', fg='red')
             return
-        
+
         if result == 'user_not_client_contact':
             click.secho('You are not the contact of this client.', fg='red')
             return
-        
+
         else:
             click.secho('Contract successfully updated.', fg='green')
 

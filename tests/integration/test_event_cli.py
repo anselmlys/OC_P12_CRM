@@ -1,5 +1,4 @@
 from click.testing import CliRunner
-from datetime import datetime, timezone
 
 from crm.cli.event_cli import events
 
@@ -14,7 +13,7 @@ def test_create_event_displays_success(monkeypatch):
         def create_event(self, contract_id, start_date, end_date, support_contact_id,
                          location, number_of_attendees, notes):
             return True
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -40,7 +39,7 @@ def test_create_event_displays_error_if_user_not_authenticated(monkeypatch):
         def create_event(self, contract_id, start_date, end_date, support_contact_id,
                          location, number_of_attendees, notes):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -66,7 +65,7 @@ def test_create_event_displays_error_if_contract_not_found(monkeypatch):
         def create_event(self, contract_id, start_date, end_date, support_contact_id,
                          location, number_of_attendees, notes):
             return 'contract_not_found'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -92,7 +91,7 @@ def test_create_event_displays_error_if_user_not_client_contact(monkeypatch):
         def create_event(self, contract_id, start_date, end_date, support_contact_id,
                          location, number_of_attendees, notes):
             return 'user_not_client_contact'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -118,7 +117,7 @@ def test_create_event_displays_error_if_contract_not_signed(monkeypatch):
         def create_event(self, contract_id, start_date, end_date, support_contact_id,
                          location, number_of_attendees, notes):
             return 'contract_not_signed'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -147,7 +146,7 @@ def test_get_events_displays_list_of_events(monkeypatch):
     class FakeContract:
         id = 2
         client = FakeClient()
-    
+
     class FakeSupport:
         id = 4
         first_name = 'john'
@@ -166,7 +165,7 @@ def test_get_events_displays_list_of_events(monkeypatch):
 
         def get_all_events(self):
             return [FakeEvent(),]
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -205,7 +204,7 @@ def test_get_events_displays_list_of_events_to_assign(monkeypatch):
 
         def get_events_to_assign(self):
             return [FakeEvent(),]
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -229,7 +228,7 @@ def test_get_events_displays_list_of_events_assigned_to_user(monkeypatch):
     class FakeContract:
         id = 2
         client = FakeClient()
-    
+
     class FakeSupport:
         id = 4
         first_name = 'john'
@@ -248,7 +247,7 @@ def test_get_events_displays_list_of_events_assigned_to_user(monkeypatch):
 
         def get_assigned_events(self):
             return [FakeEvent(),]
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -271,7 +270,7 @@ def test_get_events_displays_error_if_user_not_authenticated(monkeypatch):
 
         def get_all_events(self):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -289,7 +288,7 @@ def test_get_events_displays_error_if_user_does_not_have_management_role(monkeyp
 
         def get_events_to_assign(self):
             return 'user_not_management_role'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -307,7 +306,7 @@ def test_get_events_displays_error_if_user_does_not_have_support_role(monkeypatc
 
         def get_assigned_events(self):
             return 'user_not_support_role'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -332,7 +331,7 @@ def test_get_event_displays_details_of_an_event(monkeypatch):
         id = 2
         client_id = 3
         client = FakeClient()
-    
+
     class FakeSupport:
         id = 4
         first_name = 'john'
@@ -357,7 +356,7 @@ def test_get_event_displays_details_of_an_event(monkeypatch):
 
         def get_event(self, event_id):
             return FakeEvent()
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -392,7 +391,7 @@ def test_update_event_displays_success(monkeypatch):
             assert number_of_attendees is None
             assert notes is None
             return True
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -419,7 +418,7 @@ def test_update_event_displays_error_if_user_not_authenticated(monkeypatch):
         def update_event(self, event_id, start_date, end_date,
                          location, number_of_attendees, notes):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -444,7 +443,7 @@ def test_update_event_displays_error_if_event_not_found(monkeypatch):
         def update_event(self, event_id, start_date, end_date,
                          location, number_of_attendees, notes):
             return 'event_not_found'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -469,7 +468,7 @@ def test_update_event_displays_error_if_user_not_client_support_contact(monkeypa
         def update_event(self, event_id, start_date, end_date,
                          location, number_of_attendees, notes):
             return 'user_not_client_support_contact'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -496,7 +495,7 @@ def test_assign_event_displays_success(monkeypatch):
         def assign_support_contact(self, event_id, support_contact_id):
             assert support_contact_id == 2
             return True
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -521,7 +520,7 @@ def test_assign_event_displays_error_if_user_not_authenticated(monkeypatch):
 
         def assign_support_contact(self, event_id, support_contact_id):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -546,7 +545,7 @@ def test_assign_event_displays_error_if_user_does_not_have_management_role(monke
 
         def assign_support_contact(self, event_id, support_contact_id):
             return 'user_not_management_role'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -571,7 +570,7 @@ def test_assign_event_displays_error_if_support_contact_not_found(monkeypatch):
 
         def assign_support_contact(self, event_id, support_contact_id):
             return 'support_contact_not_found'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()
@@ -596,7 +595,7 @@ def test_assign_event_displays_error_if_support_contact_not_support_role(monkeyp
 
         def assign_support_contact(self, event_id, support_contact_id):
             return 'support_contact_not_support_role'
-    
+
     monkeypatch.setattr('crm.cli.event_cli.EventController', FakeEventController)
 
     runner = CliRunner()

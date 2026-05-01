@@ -39,12 +39,12 @@ class BaseRepository(ABC):
                 if field not in self.editable_fields:
                     raise ValueError(f'Field "{field}" cannot be updated')
                 setattr(obj, field, value)
-            
+
             self.session.commit()
             self.session.refresh(obj)
 
             return obj
-        
+
         except SQLAlchemyError as e:
             self.session.rollback()
             raise RuntimeError(f'Database error while updating {self.model.__name__} data') from e
@@ -55,12 +55,12 @@ class BaseRepository(ABC):
             obj = self.get_by_id(object_id)
             if obj is None:
                 return False
-            
+
             self.session.delete(obj)
             self.session.commit()
 
             return True
-        
+
         except SQLAlchemyError as e:
             self.session.rollback()
             raise RuntimeError(f'Database error while deleting {self.model.__name__} data') from e

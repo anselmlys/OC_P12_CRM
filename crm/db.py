@@ -18,9 +18,11 @@ if not database_url:
 
 engine = create_engine(database_url, echo=False)
 
+
 # Ensure SQLite enforces foreign key constraints for every new connection
 @event.listens_for(engine, 'connect')
 def enable_sqlite_foreign_key(dbapi_connection, connection_record):
     dbapi_connection.execute('PRAGMA foreign_keys=ON')
+
 
 Session = sessionmaker(bind=engine)

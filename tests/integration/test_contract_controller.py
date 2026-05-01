@@ -1,5 +1,3 @@
-import pytest
-
 from crm.models.contract import Contract
 
 
@@ -11,11 +9,11 @@ def test_create_contract_returns_contract_after_saving_in_database(
         contract_controller,
         client_1,
         session
-    ):
+):
 
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: management_payload)
-    
+
     result = contract_controller.create_contract(
         client_id=str(client_1.id),
         total_amount=' 20000  ',
@@ -42,11 +40,11 @@ def test_create_contract_returns_none_if_user_not_authenticated(
         contract_controller,
         client_1,
         session
-    ):
+):
 
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: None)
-    
+
     result = contract_controller.create_contract(
         client_id=str(client_1.id),
         total_amount=' 20000  ',
@@ -63,14 +61,14 @@ def test_create_contract_returns_none_if_user_does_not_have_management_role(
         client_1,
         session,
         sales_payload
-    ):
+):
 
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: sales_payload)
-    
+
     monkeypatch.setattr('crm.controllers.contract_controller.is_authenticated',
                         lambda payload: True,)
-    
+
     result = contract_controller.create_contract(
         client_id=str(client_1.id),
         total_amount=' 20000  ',
@@ -92,7 +90,7 @@ def test_get_unsigned_contracts_returns_list_of_contracts(
 ):
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: sales_payload)
-    
+
     result = contract_controller.get_unsigned_contracts()
 
     assert len(result) == 2
@@ -107,7 +105,7 @@ def test_get_unsigned_contracts_returns_none_if_user_not_authenticated(
 ):
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: None)
-    
+
     result = contract_controller.get_unsigned_contracts()
 
     assert result == 'user_not_authenticated'
@@ -122,7 +120,7 @@ def test_get_unsigned_contracts_returns_none_if_user_does_not_have_sales_role(
 ):
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: management_payload)
-    
+
     result = contract_controller.get_unsigned_contracts()
 
     assert result == 'user_not_sales_role'
@@ -142,7 +140,7 @@ def test_get_unpaid_contracts_returns_list_of_contracts(
 
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: sales_payload)
-    
+
     result = contract_controller.get_unpaid_contracts()
 
     assert len(result) == 2
@@ -160,7 +158,7 @@ def test_get_unpaid_contracts_returns_none_if_user_not_authenticated(
 
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: None)
-    
+
     result = contract_controller.get_unpaid_contracts()
 
     assert result == 'user_not_authenticated'
@@ -178,7 +176,7 @@ def test_get_unpaid_contracts_returns_none_if_user_does_not_have_sales_role(
 
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: management_payload)
-    
+
     result = contract_controller.get_unpaid_contracts()
 
     assert result == 'user_not_sales_role'
@@ -193,10 +191,10 @@ def test_update_contract_returns_updated_contract_if_user_has_management_role(
         contract_1,
         client_2,
         session
-    ):
+):
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: management_payload)
-    
+
     result = contract_controller.update_contract(
         contract_id=contract_1.id,
         client_id=str(client_2.id),
@@ -208,8 +206,8 @@ def test_update_contract_returns_updated_contract_if_user_has_management_role(
     assert result is not None
     assert result.client_id == client_2.id
     assert result.total_amount == 2000
-    assert result.remaining_amount == None
-    assert result.signed == True
+    assert result.remaining_amount is None
+    assert result.signed is True
 
     updated_contract = session.query(Contract).filter(Contract.id == contract_1.id).first()
 
@@ -227,10 +225,10 @@ def test_update_contract_returns_unchanged_contract_if_update_none(
         contract_1,
         client_1,
         session
-    ):
+):
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: management_payload)
-    
+
     result = contract_controller.update_contract(
         contract_id=contract_1.id,
         client_id=None,
@@ -243,7 +241,7 @@ def test_update_contract_returns_unchanged_contract_if_update_none(
     assert result.client_id == client_1.id
     assert result.total_amount is None
     assert result.remaining_amount is None
-    assert result.signed == False
+    assert result.signed is False
 
     updated_contract = session.query(Contract).filter(Contract.id == contract_1.id).first()
 
@@ -261,10 +259,10 @@ def test_update_contract_returns_updated_contract_if_user_is_client_contact(
         contract_1,
         client_1,
         session
-    ):
+):
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: sales_payload)
-    
+
     contract_1.client.sales_contact_id = int(sales_payload['sub'])
 
     result = contract_controller.update_contract(
@@ -278,8 +276,8 @@ def test_update_contract_returns_updated_contract_if_user_is_client_contact(
     assert result is not None
     assert result.client_id == client_1.id
     assert result.total_amount == 2000
-    assert result.remaining_amount == None
-    assert result.signed == True
+    assert result.remaining_amount is None
+    assert result.signed is True
 
     updated_contract = session.query(Contract).filter(Contract.id == contract_1.id).first()
 
@@ -296,10 +294,10 @@ def test_update_contract_returns_none_if_user_is_not_authenticated(
         contract_1,
         client_1,
         session
-    ):
+):
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: None)
-    
+
     result = contract_controller.update_contract(
         contract_id=contract_1.id,
         client_id=str(client_1.id),
@@ -313,20 +311,20 @@ def test_update_contract_returns_none_if_user_is_not_authenticated(
     assert contract_in_db.total_amount is None
 
 
-def test_update_contract_returns_none_if_user_does_not_have_management_role_or_is_not_client_contact(
+def test_update_contract_returns_none_if_user_not_management_not_client_contact(
         monkeypatch,
         sales_payload,
         contract_controller,
         contract_1,
         client_1,
         session
-    ):
+):
     monkeypatch.setattr('crm.controllers.contract_controller.get_current_user_payload',
                         lambda: sales_payload)
-    
+
     monkeypatch.setattr('crm.controllers.contract_controller.is_authenticated',
                         lambda payload: True)
-    
+
     result = contract_controller.update_contract(
         contract_id=contract_1.id,
         client_id=str(client_1.id),

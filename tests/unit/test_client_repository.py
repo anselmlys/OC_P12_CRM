@@ -25,14 +25,14 @@ def test_create_client_returns_client_and_save_in_database(client_repo, session)
 
 def test_create_client_rolls_back_on_error(client_repo, session, monkeypatch):
     rollback_called = False
-    
+
     def mock_commit():
         raise SQLAlchemyError('DB error')
-    
+
     def mock_rollback():
         nonlocal rollback_called
         rollback_called = True
-    
+
     monkeypatch.setattr(session, 'commit', mock_commit)
     monkeypatch.setattr(session, 'rollback', mock_rollback)
 
@@ -42,5 +42,5 @@ def test_create_client_rolls_back_on_error(client_repo, session, monkeypatch):
             first_name='Jane',
             email='test@test.com',
         )
-    
+
     assert rollback_called is True

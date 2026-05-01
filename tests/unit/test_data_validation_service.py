@@ -45,12 +45,14 @@ def test_clean_required_string_returns_cleaned_string():
 
     assert cleaned_value == 'doe'
 
+
 def test_clean_required_string_raises_error_if_string_is_empty():
     value = ' '
     field_name = 'last_name'
 
     with pytest.raises(ValueError):
         data_validation_service.clean_required_string(value, field_name)
+
 
 def test_clean_required_string_raises_error_if_field_is_none():
     value = None
@@ -69,12 +71,14 @@ def test_clean_optional_string_returns_cleaned_string():
 
     assert cleaned_value == 'Fake company name 1'
 
+
 def test_clean_optional_string_returns_none_if_field_is_empty():
     value = '   '
 
     cleaned_value = data_validation_service.clean_optional_string(value)
 
     assert cleaned_value is None
+
 
 def test_clean_optional_string_returns_none_if_field_is_none():
     value = None
@@ -93,6 +97,7 @@ def test_clean_email_returns_cleaned_email():
 
     assert cleaned_email == 'test@test.com'
 
+
 def test_clean_email_raises_error_if_email_format_is_invalid():
     email = ' @test.'
 
@@ -109,17 +114,20 @@ def test_clean_required_integer_returns_cleaned_integer():
 
     assert result == 5
 
+
 def test_clean_required_integer_raises_error_if_field_is_none():
     value = None
 
     with pytest.raises(ValueError):
         data_validation_service.clean_required_integer(value, 'total_amount')
 
+
 def test_clean_required_integer_raises_error_if_field_is_empty():
     value = '  '
 
     with pytest.raises(ValueError):
         data_validation_service.clean_required_integer(value, 'total_amount')
+
 
 def test_clean_required_integer_raises_error_if_field_is_not_integer():
     value = ' abc '
@@ -137,19 +145,22 @@ def test_clean_optional_integer_returns_cleaned_integer():
 
     assert result == 5
 
+
 def test_clean_optional_integer_returns_none_if_field_is_none():
     value = None
 
     result = data_validation_service.clean_optional_integer(value, 'total_amount')
 
-    assert result == None
+    assert result is None
+
 
 def test_clean_optional_integer_returns_none_if_field_is_empty():
     value = '  '
 
     result = data_validation_service.clean_optional_integer(value, 'total_amount')
 
-    assert result == None
+    assert result is None
+
 
 def test_clean_optional_integer_raises_error_if_field_is_not_integer():
     value = '  abc '
@@ -165,21 +176,24 @@ def test_clean_optional_boolean_returns_true_if_field_is_yes():
 
     result = data_validation_service.clean_optional_boolean(value, 'signed')
 
-    assert result == True
+    assert result is True
+
 
 def test_clean_optional_boolean_returns_false_if_field_is_no():
     value = ' no  '
 
     result = data_validation_service.clean_optional_boolean(value, 'signed')
 
-    assert result == False
+    assert result is False
+
 
 def test_clean_optional_boolean_returns_false_if_field_is_none():
     value = None
 
     result = data_validation_service.clean_optional_boolean(value, 'signed')
 
-    assert result == False
+    assert result is False
+
 
 def test_clean_optional_boolean_raises_error_if_field_is_not_yes_or_no_or_none():
     value = ' abc'
@@ -192,24 +206,27 @@ def test_clean_optional_boolean_raises_error_if_field_is_not_yes_or_no_or_none()
 
 def test_clean_optional_date_returns_cleaned_date():
     value = '02/02/2022'
-    
+
     result = data_validation_service.clean_optional_date(value, 'start_date')
 
     assert result == date(2022, 2, 2)
+
 
 def test_clean_optional_date_returns_none_if_value_is_none():
     value = None
 
     result = data_validation_service.clean_optional_date(value, 'start_date')
 
-    assert result == None
+    assert result is None
+
 
 def test_clean_optional_date_returns_none_if_value_is_empty_string():
     value = '  '
 
     result = data_validation_service.clean_optional_date(value, 'start_date')
 
-    assert result == None
+    assert result is None
+
 
 def test_clean_optional_date_raises_error_if_value_invalid_format():
     value = '  02- 05-1996 '
@@ -227,12 +244,14 @@ def test_clean_role_returns_management():
 
     assert result == 'management'
 
+
 def test_clean_role_returns_support():
     value = ' support  '
 
     result = data_validation_service.clean_role(value)
 
     assert result == 'support'
+
 
 def test_clean_role_returns_sales():
     value = ' sales  '
@@ -241,17 +260,20 @@ def test_clean_role_returns_sales():
 
     assert result == 'sales'
 
+
 def test_clean_role_raises_error_if_value_is_none():
     value = None
 
     with pytest.raises(ValueError):
         data_validation_service.clean_role(value)
 
+
 def test_clean_role_raises_error_if_value_is_empty():
     value = '  '
 
     with pytest.raises(ValueError):
         data_validation_service.clean_role(value)
+
 
 def test_clean_role_raises_error_if_value_is_invalid():
     value = ' abc '

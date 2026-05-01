@@ -9,6 +9,7 @@ def test_is_authenticated_returns_true_if_payload_not_none():
 
     assert result is True
 
+
 def test_is_authenticated_returns_false_if_payload_is_none():
     test_payload = None
 

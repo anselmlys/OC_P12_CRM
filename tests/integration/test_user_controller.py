@@ -12,8 +12,8 @@ def test_create_user_returns_new_user(
 ):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: management_payload)
-    
-    password_entered='motdepasse123'
+
+    password_entered = 'motdepasse123'
 
     result = user_controller.create_user(
         email='  user-test@test.com ',
@@ -42,10 +42,10 @@ def test_create_user_returns_none_if_user_not_authenticated(
         monkeypatch,
         user_controller,
         session
-    ):
+):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: None)
-    
+
     result = user_controller.create_user(
         email='  user-test@test.com ',
         last_name='Un  ',
@@ -63,10 +63,10 @@ def test_create_user_returns_none_if_user_does_not_have_management_role(
         user_controller,
         session,
         sales_payload
-    ):
+):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: sales_payload)
-    
+
     result = user_controller.create_user(
         email='  user-test@test.com ',
         last_name='Un  ',
@@ -90,7 +90,7 @@ def test_update_user_by_id_returns_updated_user_data(
 ):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: management_payload)
-    
+
     result = user_controller.update_user_by_id(
         user_id=user.id,
         email='  update-test@test.com ',
@@ -123,7 +123,7 @@ def test_update_user_by_id_returns_unchanged_user_if_update_none(
 ):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: management_payload)
-    
+
     result = user_controller.update_user_by_id(
         user_id=user.id,
         email=None,
@@ -155,7 +155,7 @@ def test_update_user_by_id_returns_none_if_user_not_authenticated(
 ):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: None)
-    
+
     result = user_controller.update_user_by_id(
         user_id=user.id,
         email='  update-test@test.com ',
@@ -181,7 +181,7 @@ def test_update_user_by_id_returns_none_if_user_does_not_have_management_role(
 ):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: sales_payload)
-    
+
     result = user_controller.update_user_by_id(
         user_id=user.id,
         email='  update-test@test.com ',
@@ -209,7 +209,7 @@ def test_delete_user_by_id_returns_true_if_deletion_completed(
 ):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: management_payload)
-    
+
     result = user_controller.delete_user_by_id(user.id)
 
     assert result is True
@@ -224,7 +224,7 @@ def test_delete_user_by_id_returns_false_if_user_not_authenticated(
 ):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: None)
-    
+
     result = user_controller.delete_user_by_id(user.id)
 
     assert result == 'user_not_authenticated'
@@ -243,7 +243,7 @@ def test_delete_user_by_id_returns_false_if_user_does_not_have_management_role(
 ):
     monkeypatch.setattr('crm.controllers.user_controller.get_current_user_payload',
                         lambda: sales_payload)
-    
+
     result = user_controller.delete_user_by_id(user.id)
 
     assert result == 'user_not_management_role'

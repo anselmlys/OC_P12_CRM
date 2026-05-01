@@ -9,25 +9,25 @@ from crm.services.data_validation_service import (clean_optional_integer,
 
 class ContractController:
     '''Handle contract-related operations with authentication and authorization checks.'''
-    
+
     def __init__(self, contract_repository):
         self.contract_repository = contract_repository
-    
+
     def get_all_contracts(self):
         '''Return a list of all contracts. User must be authenticated.'''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         contracts = self.contract_repository.get_all()
         return contracts
-    
+
     def get_contract(self, contract_id):
         '''Return a contract. User must be authenticated.'''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         contract = self.contract_repository.get_by_id(contract_id)
         return contract
 
@@ -41,7 +41,7 @@ class ContractController:
 
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'management'):
             return 'user_not_management_role'
 
@@ -58,7 +58,7 @@ class ContractController:
         )
 
         return contract
-    
+
     def get_unsigned_contracts(self):
         '''
         Return a list of all unsigned contracts.
@@ -67,13 +67,13 @@ class ContractController:
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'sales'):
             return 'user_not_sales_role'
-        
+
         contracts = self.contract_repository.get_unsigned_contracts()
         return contracts
-    
+
     def get_unpaid_contracts(self):
         '''
         Return a list of all unpaid contracts.
@@ -82,10 +82,10 @@ class ContractController:
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'sales'):
             return 'user_not_sales_role'
-        
+
         contracts = self.contract_repository.get_contracts_with_remaining_amounts()
         return contracts
 
@@ -100,7 +100,7 @@ class ContractController:
 
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         contract = self.contract_repository.get_by_id(contract_id)
         if contract is None:
             return 'contract_not_found'
@@ -112,18 +112,19 @@ class ContractController:
             and payload['sub'] != str(contract.client.sales_contact_id)
         ):
             return 'user_not_client_contact'
-        
+
         updates = {}
-        
+
         if client_id is not None:
             updates['client_id'] = clean_optional_integer(client_id, 'client_id')
-        
+
         if total_amount is not None:
             updates['total_amount'] = clean_optional_integer(total_amount, 'total_amount')
 
         if remaining_amount is not None:
-            updates['remaining_amount'] = clean_optional_integer(remaining_amount, 'remaining_amount')
-        
+            updates['remaining_amount'] = clean_optional_integer(
+                remaining_amount, 'remaining_amount')
+
         if signed is not None:
             updates['signed'] = clean_optional_boolean(signed, 'signed')
 

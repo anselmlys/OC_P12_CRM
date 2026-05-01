@@ -27,12 +27,12 @@ class ClientRepository(BaseRepository):
             company_name=company_name,
             sales_contact_id=sales_contact_id
         )
-        try :
+        try:
             self.session.add(client)
             self.session.commit()
             self.session.refresh(client)
         except SQLAlchemyError as e:
             self.session.rollback()
-            raise RuntimeError(f'Database error while saving client data') from e
+            raise RuntimeError('Database error while saving client data') from e
 
         return client

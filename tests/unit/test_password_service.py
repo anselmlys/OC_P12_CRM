@@ -50,4 +50,3 @@ def test_verify_password_returns_false_if_passwords_do_not_match():
     password_2 = 'other-test-password'
 
     assert not password_service.verify_password(password_2, stored_password)
-

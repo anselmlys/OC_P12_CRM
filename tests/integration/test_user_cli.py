@@ -15,7 +15,7 @@ def test_create_user_displays_success(monkeypatch):
 
         def create_user(self, email, last_name, first_name, role, password):
             return FakeUser()
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -43,7 +43,7 @@ def test_create_user_displays_error_if_user_not_authenticated(monkeypatch):
 
         def create_user(self, email, last_name, first_name, role, password):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -71,7 +71,7 @@ def test_create_user_displays_error_if_user_does_not_have_management_role(monkey
 
         def create_user(self, email, last_name, first_name, role, password):
             return 'user_not_management_role'
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -99,7 +99,7 @@ def test_create_user_displays_error_if_value_or_type_error_raised(monkeypatch):
 
         def create_user(self, email, last_name, first_name, role, password):
             raise ValueError('email invalid')
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -130,7 +130,7 @@ def test_get_users_displays_success(monkeypatch):
             self.last_name = last_name
             self.first_name = first_name
             self.role = role
-    
+
     class FakeUserController:
         def __init__(self, user_repository):
             pass
@@ -140,7 +140,7 @@ def test_get_users_displays_success(monkeypatch):
                 FakeUser(1, 'jane@test.com', 'doe', 'jane', 'management'),
                 FakeUser(2, 'john@test.com', 'doe', 'john', 'sales')
             ]
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -164,7 +164,7 @@ def test_get_users_displays_error_if_user_not_authenticated(monkeypatch):
 
         def get_all_users(self):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -182,7 +182,7 @@ def test_get_users_displays_error_if_user_does_not_have_management_role(monkeypa
 
         def get_all_users(self):
             return 'user_not_management_role'
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -210,7 +210,7 @@ def test_update_user_displays_success(monkeypatch):
             assert first_name is None
             assert role == 'sales'
             return FakeUser()
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -237,7 +237,7 @@ def test_update_user_displays_error_if_user_not_authenticated(monkeypatch):
 
         def update_user_by_id(self, user_id, email, last_name, first_name, role):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -264,7 +264,7 @@ def test_update_user_displays_error_if_user_does_not_have_management_role(monkey
 
         def update_user_by_id(self, user_id, email, last_name, first_name, role):
             return 'user_not_management_role'
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -291,7 +291,7 @@ def test_update_user_displays_error_if_value_error_raised(monkeypatch):
 
         def update_user_by_id(self, user_id, email, last_name, first_name, role):
             raise ValueError('Invalid email.')
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -320,7 +320,7 @@ def test_delete_user_displays_success(monkeypatch):
 
         def delete_user_by_id(self, user_id):
             return True
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -341,7 +341,7 @@ def test_delete_user_displays_error_if_user_not_authenticated(monkeypatch):
 
         def delete_user_by_id(self, user_id):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()
@@ -362,7 +362,7 @@ def test_delete_user_displays_error_if_user_does_not_have_management_role(monkey
 
         def delete_user_by_id(self, user_id):
             return 'user_not_management_role'
-    
+
     monkeypatch.setattr('crm.cli.user_cli.UserController', FakeUserController)
 
     runner = CliRunner()

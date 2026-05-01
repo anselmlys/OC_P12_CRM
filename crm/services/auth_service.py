@@ -11,7 +11,7 @@ def create_user(user_repository, email, last_name, first_name, password_entered,
     hashed_password = hash_password(password_entered)
 
     user = user_repository.create_user(email, last_name, first_name, hashed_password, role)
-    
+
     return user
 
 
@@ -21,7 +21,7 @@ def login(session, email, password_entered):
     user = repo.get_by_email(email)
     if user is None:
         return 'user_not_found'
-    
+
     is_valid = verify_password(
         password_entered,
         user.hashed_password,
@@ -29,10 +29,10 @@ def login(session, email, password_entered):
 
     if not is_valid:
         return 'invalid_password'
-    
+
     token = create_access_token(user)
     save_token(token)
-    
+
     return True
 
 
@@ -47,7 +47,7 @@ def get_current_user_payload():
 
     if token is None:
         return None
-    
+
     try:
         return decode_access_token(token)
     except ExpiredSignatureError:

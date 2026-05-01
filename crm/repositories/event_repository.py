@@ -36,28 +36,28 @@ class EventRepository(BaseRepository):
             self.session.add(event)
             self.session.commit()
             self.session.refresh(event)
-        
+
         except SQLAlchemyError as e:
             self.session.rollback()
-            raise RuntimeError(f'Database error while saving event data') from e
+            raise RuntimeError('Database error while saving event data') from e
 
         return event
 
     def get_events_without_support_contact(self):
         '''Return a list of all events to which no support contact has been assigned.'''
         try:
-            events = self.session.query(Event).filter(Event.support_contact_id == None).all()
+            events = self.session.query(Event).filter(Event.support_contact_id is None).all()
             return events
 
         except SQLAlchemyError as e:
             raise RuntimeError(f'Database error while fetching {self.model.__name__} data') from e
-        
+
     def get_events_by_support_contact_id(self, user_id):
         '''Filter events based on a support contact id and return the list.'''
         try:
             events = self.session.query(Event).filter(Event.support_contact_id == user_id).all()
             return events
-        
+
         except SQLAlchemyError as e:
             raise RuntimeError(f'Database error while fetching {self.model.__name__} data') from e
 
@@ -65,12 +65,12 @@ class EventRepository(BaseRepository):
         '''Update the support contact of an event, then return the updated event.'''
         try:
             event.support_contact_id = new_support_contact_id
-            
+
             self.session.commit()
             self.session.refresh(event)
 
             return event
-        
+
         except SQLAlchemyError as e:
             self.session.rollback()
             raise RuntimeError(f'Database error while updating {self.model.__name__} data') from e

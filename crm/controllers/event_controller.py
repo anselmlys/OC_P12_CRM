@@ -2,7 +2,7 @@ from crm.services.auth_service import get_current_user_payload
 from crm.services.authorization_service import is_authenticated, has_role
 from crm.services.data_validation_service import (clean_optional_date,
                                                   clean_optional_string,
-                                                  clean_optional_integer,) 
+                                                  clean_optional_integer,)
 
 
 class EventController:
@@ -18,19 +18,19 @@ class EventController:
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         events = self.event_repository.get_all()
         return events
-    
+
     def get_event(self, event_id):
         '''Return an event. User must be authenticated.'''
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         event = self.event_repository.get_by_id(event_id)
         return event
-    
+
     def get_events_to_assign(self):
         '''
         Retrieve all events without a support contact.
@@ -39,13 +39,13 @@ class EventController:
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'management'):
             return 'user_not_management_role'
-        
+
         events = self.event_repository.get_events_without_support_contact()
         return events
-    
+
     def get_assigned_events(self):
         '''
         Retrieve all events assigned to the user.
@@ -54,13 +54,13 @@ class EventController:
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'support'):
             return 'user_not_support_role'
-        
+
         events = self.event_repository.get_events_by_support_contact_id(int(payload['sub']))
         return events
-    
+
     def create_event(self, contract_id,
                      start_date=None, end_date=None,
                      support_contact_id=None, location=None,
@@ -73,24 +73,24 @@ class EventController:
 
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         contract = self.contract_repository.get_by_id(contract_id)
         if contract is None:
             return 'contract_not_found'
 
         if contract.client.sales_contact_id != int(payload['sub']):
             return 'user_not_client_contact'
-        
+
         if not contract.signed:
             return 'contract_not_signed'
-        
+
         start_date = clean_optional_date(start_date, 'start_date')
         end_date = clean_optional_date(end_date, 'end_date')
         support_contact_id = clean_optional_integer(support_contact_id, 'support_contact_id')
         location = clean_optional_string(location)
         number_of_attendees = clean_optional_integer(number_of_attendees, 'number_of_attendees')
         notes = clean_optional_string(notes)
-        
+
         event = self.event_repository.create_event(
             contract_id=contract.id,
             start_date=start_date,
@@ -102,7 +102,7 @@ class EventController:
         )
 
         return event
-    
+
     def assign_support_contact(self, event_id, support_contact_id):
         '''
         Update the support contact of an event and returns the updated event.
@@ -113,17 +113,17 @@ class EventController:
 
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'management'):
             return 'user_not_management_role'
-        
+
         support_contact = self.user_repository.get_by_id(support_contact_id)
         if support_contact is None:
             return 'support_contact_not_found'
-        
+
         if support_contact.role != 'support':
             return 'support_contact_not_support_role'
-        
+
         event = self.event_repository.get_by_id(event_id)
         if event is None:
             return 'event_not_found'
@@ -134,7 +134,7 @@ class EventController:
         )
 
         return event
-    
+
     def update_event(self, event_id, start_date=None, end_date=None,
                      location=None, number_of_attendees=None, notes=None):
         '''
@@ -145,28 +145,29 @@ class EventController:
 
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         event = self.event_repository.get_by_id(event_id)
         if event is None:
             return 'event_not_found'
-        
+
         if event.support_contact_id != int(payload['sub']):
             return 'user_not_client_support_contact'
-        
+
         updates = {}
-        
+
         if start_date is not None:
             updates['start_date'] = clean_optional_date(start_date, 'start_date')
 
         if end_date is not None:
             updates['end_date'] = clean_optional_date(end_date, 'end_date')
-        
+
         if location is not None:
             updates['location'] = clean_optional_string(location)
-    
+
         if number_of_attendees is not None:
-            updates['number_of_attendees'] = clean_optional_integer(number_of_attendees, 'number_of_attendees')
-        
+            updates['number_of_attendees'] = clean_optional_integer(
+                number_of_attendees, 'number_of_attendees')
+
         if notes is not None:
             updates['notes'] = clean_optional_string(notes)
 

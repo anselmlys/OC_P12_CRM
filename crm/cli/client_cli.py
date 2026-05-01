@@ -44,14 +44,14 @@ def create_client(last_name, first_name, email, phone_number, company_name):
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         if result == 'user_not_sales_role':
             click.secho('Action restricted to the sales team.', fg='red')
             return
-        
+
         else:
             click.secho('Client successfully created.', fg='green')
-        
+
     except (ValueError, TypeError) as e:
         click.secho(f'Error: {e}', fg='red')
 
@@ -76,7 +76,7 @@ def get_clients():
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         else:
             console = Console()
 
@@ -92,7 +92,6 @@ def get_clients():
             for client in result:
                 company_name = client.company_name or '-'
                 sales_contact = client.sales_contact or '-'
-
 
                 table.add_row(
                     str(client.id),
@@ -127,7 +126,7 @@ def get_client(client_id):
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         else:
             console = Console()
 
@@ -139,14 +138,16 @@ def get_client(client_id):
 
             content = Text()
             content.append(f'ID:                {str(result.id)}\n')
-            content.append(f'Name:              {result.first_name.title()} {result.last_name.title()}\n')
+            content.append(f'Name:              {result.first_name.title()} '
+                           f'{result.last_name.title()}\n')
             content.append(f'Email:             {result.email}\n')
             content.append(f'Phone number:      {phone_number}\n')
             content.append(f'Company name:      {company_name.title()}\n')
             content.append(f'Creation date:     {created_at}\n')
             content.append(f'Last update:       {updated_at}\n')
             content.append(f'Sales contact ID:  {str(sales_contact.id)}\n')
-            content.append(f'Sales contact:     {sales_contact.first_name.title()} {sales_contact.last_name.title()}')
+            content.append(f'Sales contact:     {sales_contact.first_name.title()} '
+                           f'{sales_contact.last_name.title()}')
 
             panel = Panel(
                 content,
@@ -192,19 +193,19 @@ def update_client(client_id, last_name, first_name, email, phone_number, company
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         if result == 'user_not_sales_role':
             click.secho('Action restricted to the sales team.', fg='red')
             return
-        
+
         if result == 'client_not_found':
             click.secho('Client was not found.', fg='red')
             return
-        
+
         if result == 'user_not_client_contact':
             click.secho('You are not the contact of this client.', fg='red')
             return
-        
+
         else:
             click.secho('Client successfully updated.', fg='green')
 

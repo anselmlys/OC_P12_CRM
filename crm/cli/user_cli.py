@@ -36,11 +36,11 @@ def create_user(email, last_name, first_name, role, password):
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         elif result == 'user_not_management_role':
             click.secho('Action restricted to the management team.', fg='red')
             return
-        
+
         else:
             click.secho('User successfully created.', fg='green')
 
@@ -74,15 +74,15 @@ def get_users():
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         elif result == 'user_not_management_role':
             click.secho('Action restricted to the management team.', fg='red')
             return
-        
+
         else:
             console = Console()
 
-            table = Table(title='Users',show_lines=True)
+            table = Table(title='Users', show_lines=True)
 
             table.add_column('ID', justify='right', no_wrap=True)
             table.add_column('Email', justify='left', no_wrap=True)
@@ -96,7 +96,7 @@ def get_users():
                 elif user.role == 'sales':
                     role_display = '[red]sales[/red]'
                 elif user.role == 'support':
-                    role_display= '[green]support[/green]'
+                    role_display = '[green]support[/green]'
 
                 table.add_row(
                     str(user.id),
@@ -105,7 +105,7 @@ def get_users():
                     user.first_name.title(),
                     role_display
                 )
-            
+
             console.print(table)
 
     except RuntimeError as e:
@@ -143,11 +143,11 @@ def update_user(user_id, email, last_name, first_name, role):
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         elif result == 'user_not_management_role':
             click.secho('Action restricted to the management team.', fg='red')
             return
-        
+
         else:
             click.secho('User successfully updated.', fg='green')
 
@@ -185,11 +185,11 @@ def delete_user(user_id):
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         elif result == 'user_not_management_role':
             click.secho('Action restricted to the management team.', fg='red')
             return
-        
+
         else:
             click.secho('User successfully deleted.', fg='green')
 

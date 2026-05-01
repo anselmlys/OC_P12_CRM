@@ -12,7 +12,7 @@ def test_login_command_displays_success(monkeypatch):
 
         def login(self, email, password):
             return True
-        
+
     monkeypatch.setattr('crm.cli.auth_cli.AuthController', FakeAuthController)
 
     runner = CliRunner()
@@ -33,7 +33,7 @@ def test_login_command_displays_error_if_user_not_found(monkeypatch):
 
         def login(self, email, password):
             return 'user_not_found'
-        
+
     monkeypatch.setattr('crm.cli.auth_cli.AuthController', FakeAuthController)
 
     runner = CliRunner()
@@ -54,7 +54,7 @@ def test_login_command_displays_error_if_password_invalid(monkeypatch):
 
         def login(self, email, password):
             return 'invalid_password'
-        
+
     monkeypatch.setattr('crm.cli.auth_cli.AuthController', FakeAuthController)
 
     runner = CliRunner()
@@ -77,7 +77,7 @@ def test_change_password_command_displays_success(monkeypatch):
 
         def change_password(self, old_password, new_password):
             return True
-    
+
     monkeypatch.setattr('crm.cli.auth_cli.AuthController', FakeAuthController)
 
     runner = CliRunner()
@@ -98,7 +98,7 @@ def test_change_password_command_displays_error_if_user_not_authenticated(monkey
 
         def change_password(self, old_password, new_password):
             return 'user_not_authenticated'
-    
+
     monkeypatch.setattr('crm.cli.auth_cli.AuthController', FakeAuthController)
 
     runner = CliRunner()
@@ -119,7 +119,7 @@ def test_change_password_command_displays_error_if_user_not_found(monkeypatch):
 
         def change_password(self, old_password, new_password):
             return 'user_not_found'
-    
+
     monkeypatch.setattr('crm.cli.auth_cli.AuthController', FakeAuthController)
 
     runner = CliRunner()
@@ -140,7 +140,7 @@ def test_change_password_command_displays_error_if_invalid_password(monkeypatch)
 
         def change_password(self, old_password, new_password):
             return 'invalid_password'
-    
+
     monkeypatch.setattr('crm.cli.auth_cli.AuthController', FakeAuthController)
 
     runner = CliRunner()
@@ -161,7 +161,7 @@ def test_change_password_command_displays_error_if_value_error_raised(monkeypatc
 
         def change_password(self, old_password, new_password):
             raise ValueError('password invalid')
-    
+
     monkeypatch.setattr('crm.cli.auth_cli.AuthController', FakeAuthController)
 
     runner = CliRunner()

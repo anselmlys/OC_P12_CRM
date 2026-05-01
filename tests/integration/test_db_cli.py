@@ -8,7 +8,7 @@ from crm.cli.db_cli import db
 
 def test_create_admin_create_user_and_displays_success(session, user_repo, monkeypatch):
     monkeypatch.setattr('crm.cli.db_cli.Session', lambda: session)
-    
+
     runner = CliRunner()
 
     result = runner.invoke(

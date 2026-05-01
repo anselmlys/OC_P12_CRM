@@ -17,7 +17,7 @@ def create_access_token(user):
     '''Create JWT token containing user id and role.'''
     if not SECRET_KEY:
         raise ValueError('JWT_SECRET_KEY is missing from .env file.')
-    
+
     now = datetime.now(timezone.utc)
     payload = {
         'sub': str(user.id),
@@ -62,6 +62,6 @@ def decode_access_token(token):
     '''Decode and validate a JWT token, returning its payload.'''
     if not SECRET_KEY:
         raise ValueError('JWT_SECRET_KEY is missing from .env file.')
-    
+
     token_payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     return token_payload

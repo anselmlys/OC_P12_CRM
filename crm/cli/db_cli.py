@@ -3,9 +3,9 @@ import click
 from crm.db import engine, Session
 from crm.models.base import Base
 from crm.models.user import User
-from crm.models.client import Client
-from crm.models.contract import Contract
-from crm.models.event import Event
+from crm.models.client import Client  # noqa: F401
+from crm.models.contract import Contract  # noqa: F401
+from crm.models.event import Event  # noqa: F401
 from crm.repositories.user_repository import UserRepository
 from crm.services.auth_service import create_user
 from crm.services.data_validation_service import (clean_email,
@@ -41,7 +41,7 @@ def create_admin(email, last_name, first_name, password):
         if user_count > 0:
             click.secho('Admin creation refused: user already exists.', fg='red')
             return
-        
+
         user_repository = UserRepository(session)
 
         email = clean_email(email)
@@ -59,7 +59,7 @@ def create_admin(email, last_name, first_name, password):
         )
 
         click.secho('First management user created successfully.', fg='green')
-    
+
     except (ValueError, TypeError) as e:
         click.secho(f'Error: {e}', fg='red')
 

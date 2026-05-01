@@ -5,7 +5,7 @@ from crm.models.base import Base
 
 
 class Event(Base):
-    __tablename__= 'event'
+    __tablename__ = 'event'
 
     id = Column(Integer, primary_key=True)
     contract_id = Column(

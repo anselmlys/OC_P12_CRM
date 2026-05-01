@@ -153,7 +153,6 @@ def test_get_clients_displays_success(monkeypatch):
         first_name = 'Jane'
         last_name = 'Doe'
 
-
     class FakeClient:
         def __init__(self):
             self.id = 1
@@ -163,8 +162,7 @@ def test_get_clients_displays_success(monkeypatch):
             self.company_name = None
             self.sales_contact_id = 2
             self.sales_contact = FakeSalesContact()
-            
-        
+
     class FakeClientController:
         def __init__(self, client_repository):
             pass
@@ -212,7 +210,6 @@ def test_get_client_displays_success(monkeypatch):
         first_name = 'Jane'
         last_name = 'Doe'
 
-
     class FakeClient:
         def __init__(self):
             self.id = 1
@@ -225,9 +222,9 @@ def test_get_client_displays_success(monkeypatch):
             self.updated_at = datetime(2026, 2, 4, 15, 30, tzinfo=timezone.utc)
             self.sales_contact_id = 2
             self.sales_contact = FakeSalesContact()
-            
+
     client = FakeClient()
-        
+
     class FakeClientController:
         def __init__(self, client_repository):
             pass
@@ -276,7 +273,8 @@ def test_update_client_displays_success(monkeypatch):
         def __init__(self, client_repository):
             pass
 
-        def update_client(self, client_id, last_name, first_name, email, phone_number, company_name):
+        def update_client(self, client_id, last_name, first_name,
+                          email, phone_number, company_name):
             assert client_id == 1
             assert last_name == 'doe'
             assert first_name is None
@@ -284,7 +282,7 @@ def test_update_client_displays_success(monkeypatch):
             assert phone_number is None
             assert company_name == 'test company'
             return True
-        
+
     monkeypatch.setattr('crm.cli.client_cli.ClientController', FakeClientController)
 
     runner = CliRunner()
@@ -308,9 +306,10 @@ def test_update_client_displays_error_if_user_not_authenticated(monkeypatch):
         def __init__(self, client_repository):
             pass
 
-        def update_client(self, client_id, last_name, first_name, email, phone_number, company_name):
+        def update_client(self, client_id, last_name, first_name,
+                          email, phone_number, company_name):
             return 'user_not_authenticated'
-        
+
     monkeypatch.setattr('crm.cli.client_cli.ClientController', FakeClientController)
 
     runner = CliRunner()
@@ -334,9 +333,10 @@ def test_update_client_displays_error_if_user_does_not_have_sales_role(monkeypat
         def __init__(self, client_repository):
             pass
 
-        def update_client(self, client_id, last_name, first_name, email, phone_number, company_name):
+        def update_client(self, client_id, last_name, first_name,
+                          email, phone_number, company_name):
             return 'user_not_sales_role'
-        
+
     monkeypatch.setattr('crm.cli.client_cli.ClientController', FakeClientController)
 
     runner = CliRunner()
@@ -360,9 +360,10 @@ def test_update_client_displays_error_if_client_not_found(monkeypatch):
         def __init__(self, client_repository):
             pass
 
-        def update_client(self, client_id, last_name, first_name, email, phone_number, company_name):
+        def update_client(self, client_id, last_name, first_name,
+                          email, phone_number, company_name):
             return 'client_not_found'
-        
+
     monkeypatch.setattr('crm.cli.client_cli.ClientController', FakeClientController)
 
     runner = CliRunner()
@@ -386,9 +387,10 @@ def test_update_client_displays_error_if_user_not_client_contact(monkeypatch):
         def __init__(self, client_repository):
             pass
 
-        def update_client(self, client_id, last_name, first_name, email, phone_number, company_name):
+        def update_client(self, client_id, last_name,
+                          first_name, email, phone_number, company_name):
             return 'user_not_client_contact'
-        
+
     monkeypatch.setattr('crm.cli.client_cli.ClientController', FakeClientController)
 
     runner = CliRunner()

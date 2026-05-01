@@ -17,10 +17,10 @@ def test_create_event_returns_event_and_save_in_database(event_repo, contract_1,
     assert result.id is not None
     assert result.contract_id == contract_1.id
     assert result.start_date == date(2026, 12, 9)
-    assert result.location == None
+    assert result.location is None
     assert result.number_of_attendees == 50
 
-    saved_event = session.query(Event).filter(Event.contract_id==contract_1.id).first()
+    saved_event = session.query(Event).filter(Event.contract_id == contract_1.id).first()
 
     assert saved_event.id == result.id
     assert saved_event.start_date == date(2026, 12, 9)
@@ -31,7 +31,7 @@ def test_create_event_rolls_back_on_error(event_repo, contract_1, session, monke
 
     def mock_commit():
         raise SQLAlchemyError('DB error')
-    
+
     def mock_rollback():
         nonlocal rollback_called
         rollback_called = True
@@ -45,7 +45,7 @@ def test_create_event_rolls_back_on_error(event_repo, contract_1, session, monke
             start_date=date(2026, 12, 9),
             number_of_attendees=50,
         )
-    
+
     assert rollback_called is True
 
 
@@ -55,19 +55,20 @@ def test_get_events_without_support_contact_returns_event_list(
         event_repo,
         event_1,
         event_2,
-    ):
+):
 
     result = event_repo.get_events_without_support_contact()
 
     assert len(result) == 2
     assert result[0] == event_1
 
+
 def test_get_events_without_support_contact_returns_empty_list_if_no_event_found(
         event_repo,
         event_1,
         event_2,
         user
-    ):
+):
 
     event_1.support_contact_id = user.id
     event_2.support_contact_id = user.id
@@ -127,16 +128,16 @@ def test_update_support_contact_rolls_back_on_error(
         event_repo,
         event_1,
         user
-    ):
+):
     rollback_called = False
-    
+
     def mock_commit():
         raise SQLAlchemyError('DB error')
-    
+
     def mock_rollback():
         nonlocal rollback_called
         rollback_called = True
-    
+
     monkeypatch.setattr(session, 'commit', mock_commit)
     monkeypatch.setattr(session, 'rollback', mock_rollback)
 
@@ -145,5 +146,5 @@ def test_update_support_contact_rolls_back_on_error(
             event_1,
             user.id
         )
-    
+
     assert rollback_called is True

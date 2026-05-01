@@ -13,7 +13,7 @@ def init_sentry():
 
     if not sentry_dsn:
         return
-    
+
     sentry_sdk.init(
         dsn=sentry_dsn,
         environment=app_env,

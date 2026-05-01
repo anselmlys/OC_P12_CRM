@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 
 from crm.models.base import Base
 
+
 class Client(Base):
     __tablename__ = 'client'
 

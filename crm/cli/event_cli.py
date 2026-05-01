@@ -57,19 +57,19 @@ def create_event(contract_id, start_date, end_date, support_contact_id,
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         elif result == 'contract_not_found':
             click.secho('The contract was not found.', fg='red')
             return
-        
+
         elif result == 'user_not_client_contact':
             click.secho('You are not the contact of this client.', fg='red')
             return
-        
+
         elif result == 'contract_not_signed':
             click.secho('The contract is not signed yet.', fg='red')
             return
-        
+
         else:
             click.secho('Event successfully created.', fg='green')
 
@@ -84,7 +84,8 @@ def create_event(contract_id, start_date, end_date, support_contact_id,
 
 
 @events.command('list')
-@click.option('--to-assign', is_flag=True, help='Show only events not assigned to a support contact.')
+@click.option('--to-assign', is_flag=True,
+              help='Show only events not assigned to a support contact.')
 @click.option('--assigned', is_flag=True, help='Show only events assigned to you.')
 def get_events(to_assign, assigned):
     '''List all events.'''
@@ -112,15 +113,15 @@ def get_events(to_assign, assigned):
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         elif result == 'user_not_management_role':
             click.secho('Action restricted to the management team.', fg='red')
             return
-        
+
         elif result == 'user_not_support_role':
             click.secho('Action restricted to the support team.', fg='red')
             return
-        
+
         else:
             console = Console()
 
@@ -145,12 +146,13 @@ def get_events(to_assign, assigned):
                 table.add_row(
                     str(event.id),
                     str(event.contract.client.id),
-                    f'{event.contract.client.first_name.title()} {event.contract.client.last_name.title()}',
+                    (f'{event.contract.client.first_name.title()} '
+                     f'{event.contract.client.last_name.title()}'),
                     str(event.contract.id),
                     str(support_contact_id),
                     f'{support_contact_first_name} {support_contact_last_name}'
                 )
-            
+
             console.print(table)
 
     except RuntimeError as e:
@@ -175,13 +177,13 @@ def get_event(event_id):
             contract_repository,
             user_repository
         )
-        
+
         result = event_controller.get_event(event_id)
 
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         else:
             console = Console()
 
@@ -198,7 +200,8 @@ def get_event(event_id):
             )
 
             support_contact = (
-                f'{result.support_contact.first_name.title()} {result.support_contact.last_name.title()}'
+                (f'{result.support_contact.first_name.title()} '
+                 f'{result.support_contact.last_name.title()}')
                 if result.support_contact
                 else '-'
             )
@@ -214,7 +217,8 @@ def get_event(event_id):
             content.append(f'ID:                {str(result.id)}\n')
             content.append(f'Contract ID:       {str(result.contract_id)}\n')
             content.append(f'Client ID:         {str(result.contract.client_id)}\n')
-            content.append(f'Client:            {result.contract.client.first_name.title()} {result.contract.client.last_name.title()}\n')
+            content.append(f'Client:            {result.contract.client.first_name.title()}'
+                           f' {result.contract.client.last_name.title()}\n')
             content.append(f'Client contact:    {client_email}\n')
             content.append(f'                   {client_phone}\n')
             content.append(f'Start date:        {start_date}\n')
@@ -229,7 +233,7 @@ def get_event(event_id):
                 content,
                 title=f'Event #{result.id}'
             )
-            
+
             console.print(panel)
 
     except RuntimeError as e:
@@ -276,15 +280,15 @@ def update_event(event_id, start_date, end_date,
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         elif result == 'event_not_found':
             click.secho('The event was not found.', fg='red')
             return
-        
+
         elif result == 'user_not_client_support_contact':
             click.secho('You are not the support contact on this event.', fg='red')
             return
-        
+
         else:
             click.secho('Event successfully updated.', fg='green')
 
@@ -320,19 +324,20 @@ def assign_event(event_id, support_contact_id):
         if result == 'user_not_authenticated':
             click.secho('Please login first.', fg='red')
             return
-        
+
         elif result == 'user_not_management_role':
             click.secho('Action restricted to the management team.', fg='red')
             return
-        
+
         elif result == 'support_contact_not_found':
             click.secho('Support contact was not found in users.', fg='red')
             return
-        
+
         elif result == 'support_contact_not_support_role':
-            click.secho('User enterred for support contact does not have role "support".', fg='red')
+            click.secho('User enterred for support contact does not have role "support".',
+                        fg='red')
             return
-        
+
         else:
             click.secho('Support contact successfully updated.', fg='green')
 

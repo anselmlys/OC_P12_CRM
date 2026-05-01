@@ -30,11 +30,11 @@ def login(email, password):
         if result == 'user_not_found':
             click.secho('User not found.', fg='red')
             return
-        
+
         elif result == 'invalid_password':
             click.secho('Password invalid.', fg='red')
             return
-        
+
         else:
             click.secho('Login successful!', fg='green')
 
@@ -44,9 +44,9 @@ def login(email, password):
 
 @auth.command('logout')
 def logout():
-        auth_controller = AuthController(None, None)
-        auth_controller.logout()
-        click.secho('Logout successful.', fg='green')
+    auth_controller = AuthController(None, None)
+    auth_controller.logout()
+    click.secho('Logout successful.', fg='green')
 
 
 @auth.command('change-password')
@@ -77,7 +77,7 @@ def change_password(old_password, new_password):
             return
         else:
             click.secho('Password updated successfully.', fg='green')
-    
+
     except ValueError as e:
         click.secho(f'Error: {e}', fg='red')
 

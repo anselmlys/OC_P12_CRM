@@ -2,7 +2,6 @@ import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
 from crm.models.contract import Contract
-from crm.repositories.contract_repository import ContractRepository
 
 
 # Test the method create_contract
@@ -17,8 +16,8 @@ def test_create_contract_returns_contract_and_save_in_database(contract_repo, cl
     assert result.id is not None
     assert result.client_id == client_1.id
     assert result.total_amount == 2000
-    assert result.remaining_amount == None
-    assert result.signed == True
+    assert result.remaining_amount is None
+    assert result.signed is True
 
     saved_contract = session.query(Contract).filter(Contract.client_id == client_1.id).first()
 
@@ -31,11 +30,11 @@ def test_create_contract_rolls_back_on_error(contract_repo, client_1, session, m
 
     def mock_commit():
         raise SQLAlchemyError('DB error')
-    
+
     def mock_rollback():
         nonlocal rollback_called
         rollback_called = True
-    
+
     monkeypatch.setattr(session, 'commit', mock_commit)
     monkeypatch.setattr(session, 'rollback', mock_rollback)
 
@@ -45,7 +44,7 @@ def test_create_contract_rolls_back_on_error(contract_repo, client_1, session, m
             total_amount=2000,
             signed=True,
         )
-    
+
     assert rollback_called is True
 
 

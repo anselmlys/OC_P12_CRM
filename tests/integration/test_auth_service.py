@@ -1,4 +1,3 @@
-import pytest
 from jwt import ExpiredSignatureError, InvalidTokenError
 
 from crm.services import auth_service
@@ -16,7 +15,7 @@ def test_login_returns_false_if_user_not_found(monkeypatch):
     class DummyRepo:
         def get_by_email(self, email):
             return None
-    
+
     monkeypatch.setattr(auth_service, 'UserRepository', lambda session: DummyRepo())
 
     result = auth_service.login(None, 'test@test.com', 'password')
@@ -30,7 +29,7 @@ def test_login_returns_false_if_password_is_invalid(monkeypatch):
     class DummyRepo:
         def get_by_email(self, email):
             return dummy_user
-    
+
     monkeypatch.setattr(auth_service, 'UserRepository', lambda session: DummyRepo())
     monkeypatch.setattr(auth_service, 'verify_password', lambda p, h: False)
 
@@ -73,9 +72,10 @@ def test_get_current_user_payload_deletes_token_and_returns_none_if_token_is_exp
     monkeypatch.setattr(auth_service, "decode_access_token", fake_decode_access_token)
 
     delete_called = {"value": False}
+
     def fake_delete_token():
         delete_called["value"] = True
-    
+
     monkeypatch.setattr(auth_service, "delete_token", fake_delete_token)
 
     result = auth_service.get_current_user_payload()
@@ -93,9 +93,10 @@ def test_get_current_user_payload_deletes_token_and_returns_none_if_token_is_inv
     monkeypatch.setattr(auth_service, "decode_access_token", fake_decode_access_token)
 
     delete_called = {"value": False}
+
     def fake_delete_token():
         delete_called["value"] = True
-    
+
     monkeypatch.setattr(auth_service, "delete_token", fake_delete_token)
 
     result = auth_service.get_current_user_payload()

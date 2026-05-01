@@ -22,7 +22,7 @@ def test_get_by_email_returns_none_if_user_not_found(user_repo):
 
 def test_create_user_returns_user_and_save_in_database(user_repo, session):
     result = user_repo.create_user(
-        email = 'employee-test@test.com',
+        email='employee-test@test.com',
         last_name='Un',
         first_name='Known',
         hashed_password='hashed',
@@ -36,21 +36,25 @@ def test_create_user_returns_user_and_save_in_database(user_repo, session):
     assert result.hashed_password == 'hashed'
     assert result.role == 'sales'
 
-    saved_user = session.query(User).filter(User.email == 'employee-test@test.com').first()
+    saved_user = (
+        session.query(User)
+        .filter(User.email == 'employee-test@test.com')
+        .first()
+    )
 
     assert saved_user.id == result.id
     assert saved_user.email == result.email
-    
+
 
 def test_create_user_rolls_back_on_error(user_repo, session, monkeypatch):
     def mock_commit():
         raise SQLAlchemyError('DB error')
-    
+
     monkeypatch.setattr(session, 'commit', mock_commit)
 
     with pytest.raises(RuntimeError):
         user_repo.create_user(
-            email = 'test@test.com',
+            email='test@test.com',
             last_name='Doe',
             first_name='Jane',
             hashed_password='hashed',
@@ -62,27 +66,29 @@ def test_create_user_rolls_back_on_error(user_repo, session, monkeypatch):
 
 def test_update_password_returns_true(user, user_repo, session):
     new_password = 'mot-de-passe-test'
-    
+
     result = user_repo.update_password(user.id, new_password)
 
     assert result is True
-    
+
     updated_user = session.query(User).filter(User.id == user.id).first()
 
     assert updated_user.hashed_password == new_password
 
 
-def test_update_password_returns_false_if_user_not_found(user_repo, session, monkeypatch):
+def test_update_password_returns_false_if_user_not_found(
+        user_repo, session, monkeypatch):
     new_password = 'mot-de-passe-test'
-    
+
     monkeypatch.setattr(user_repo, 'get_by_id', lambda user_id: None)
-    
+
     result = user_repo.update_password(1, new_password)
 
     assert result is False
 
 
-def test_update_password_rolls_back_on_error(user_repo, user, session, monkeypatch):
+def test_update_password_rolls_back_on_error(user_repo, user,
+                                             session, monkeypatch):
     rollback_called = False
 
     def mock_commit():
@@ -91,11 +97,11 @@ def test_update_password_rolls_back_on_error(user_repo, user, session, monkeypat
     def mock_rollback():
         nonlocal rollback_called
         rollback_called = True
-    
+
     monkeypatch.setattr(session, 'commit', mock_commit)
     monkeypatch.setattr(session, 'rollback', mock_rollback)
 
     with pytest.raises(RuntimeError):
         user_repo.update_password(user.id, 'mot-de-passe-test')
-    
+
     assert rollback_called is True

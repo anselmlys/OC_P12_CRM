@@ -11,7 +11,7 @@ class UserController:
 
     def __init__(self, user_repository):
         self.user_repository = user_repository
-    
+
     def create_user(self, email, last_name, first_name, role, password_entered):
         '''
         Return new user data after saving in database.
@@ -20,16 +20,16 @@ class UserController:
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'management'):
             return 'user_not_management_role'
-        
+
         email = clean_email(email)
         last_name = clean_required_string(last_name, 'last_name')
         first_name = clean_required_string(first_name, 'first_name')
         role = clean_role(role)
         password_entered = clean_password(password_entered)
-        
+
         user = create_user(
             user_repository=self.user_repository,
             email=email,
@@ -40,12 +40,12 @@ class UserController:
         )
 
         return user
-    
+
     def get_all_users(self):
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'management'):
             return 'user_not_management_role'
 
@@ -56,13 +56,13 @@ class UserController:
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'management'):
             return 'user_not_management_role'
 
         user = self.user_repository.get_by_email(email)
         return user
-    
+
     def update_user_by_id(self, user_id, email=None, last_name=None,
                           first_name=None, role=None):
         '''
@@ -72,27 +72,27 @@ class UserController:
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'management'):
             return 'user_not_management_role'
-        
+
         updates = {}
-        
+
         if email is not None:
             updates['email'] = clean_email(email)
-        
+
         if last_name is not None:
             updates['last_name'] = clean_required_string(last_name, 'last_name')
-        
+
         if first_name is not None:
             updates['first_name'] = clean_required_string(first_name, 'first_name')
-        
+
         if role is not None:
             updates['role'] = clean_role(role)
 
         user = self.user_repository.update_object(user_id, updates)
         return user
-    
+
     def delete_user_by_id(self, user_id):
         '''
         Delete a specific user from the database and return True.
@@ -101,8 +101,8 @@ class UserController:
         payload = get_current_user_payload()
         if not is_authenticated(payload):
             return 'user_not_authenticated'
-        
+
         if not has_role(payload, 'management'):
             return 'user_not_management_role'
-        
+
         return self.user_repository.delete_object(user_id)

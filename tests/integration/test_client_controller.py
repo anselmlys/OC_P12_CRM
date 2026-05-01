@@ -1,5 +1,3 @@
-import pytest
-
 from crm.models.client import Client
 
 
@@ -24,7 +22,7 @@ def test_get_all_clients_returns_list_of_clients(sales_payload, monkeypatch,
 def test_get_all_clients_returns_none_if_user_not_authenticated(monkeypatch, client_controller):
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: None,)
-    
+
     result = client_controller.get_all_clients()
 
     assert result == 'user_not_authenticated'
@@ -32,8 +30,8 @@ def test_get_all_clients_returns_none_if_user_not_authenticated(monkeypatch, cli
 
 # Test the method create_client
 
-def test_create_client_returns_client_and_save_in_database(monkeypatch, sales_payload,
-                                                     client_controller, session):
+def test_create_client_returns_client_and_save_in_database(
+        monkeypatch, sales_payload, client_controller, session):
     monkeypatch.setattr(
         'crm.controllers.client_controller.get_current_user_payload',
         lambda: sales_payload
@@ -65,7 +63,8 @@ def test_create_client_returns_client_and_save_in_database(monkeypatch, sales_pa
     assert saved_client.sales_contact_id == int(sales_payload['sub'])
 
 
-def test_create_client_returns_none_if_user_not_authenticated(monkeypatch, client_controller, session):
+def test_create_client_returns_none_if_user_not_authenticated(
+        monkeypatch, client_controller, session):
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: None,)
 
@@ -79,10 +78,11 @@ def test_create_client_returns_none_if_user_not_authenticated(monkeypatch, clien
     assert session.query(Client).count() == 0
 
 
-def test_create_client_returns_none_if_user_does_not_have_sales_role(client_controller, management_payload, session, monkeypatch):
+def test_create_client_returns_none_if_user_does_not_have_sales_role(
+        client_controller, management_payload, session, monkeypatch):
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: management_payload,)
-    
+
     monkeypatch.setattr('crm.controllers.client_controller.is_authenticated',
                         lambda payload: True,)
 
@@ -98,10 +98,11 @@ def test_create_client_returns_none_if_user_does_not_have_sales_role(client_cont
 
 # Test the method update_client
 
-def test_update_client_returns_updated_client_and_save_in_database(client_controller, sales_payload, monkeypatch, session):
+def test_update_client_returns_updated_client_and_save_in_database(
+        client_controller, sales_payload, monkeypatch, session):
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: sales_payload,)
-    
+
     client = client_controller.create_client(
         last_name='Doe',
         first_name='Jane',
@@ -125,7 +126,7 @@ def test_update_client_returns_updated_client_and_save_in_database(client_contro
 
     updated_client = session.query(Client).filter(Client.id == client.id).first()
 
-    assert updated_client is not None 
+    assert updated_client is not None
     assert updated_client.last_name == result.last_name
     assert updated_client.first_name == result.first_name
     assert updated_client.email == result.email
@@ -133,10 +134,11 @@ def test_update_client_returns_updated_client_and_save_in_database(client_contro
     assert updated_client.company_name == result.company_name
 
 
-def test_update_client_returns_unchanged_client_if_update_none(client_controller, client_1, sales_payload, monkeypatch, session):
+def test_update_client_returns_unchanged_client_if_update_none(
+        client_controller, client_1, sales_payload, monkeypatch, session):
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: sales_payload,)
-    
+
     client_1.sales_contact_id = int(sales_payload['sub'])
 
     result = client_controller.update_client(
@@ -156,7 +158,7 @@ def test_update_client_returns_unchanged_client_if_update_none(client_controller
 
     updated_client = session.query(Client).filter(Client.id == client_1.id).first()
 
-    assert updated_client is not None 
+    assert updated_client is not None
     assert updated_client.last_name == result.last_name
     assert updated_client.first_name == result.first_name
     assert updated_client.email == result.email
@@ -164,10 +166,11 @@ def test_update_client_returns_unchanged_client_if_update_none(client_controller
     assert updated_client.company_name == result.company_name
 
 
-def test_update_client_returns_none_if_user_not_authenticated(monkeypatch, client_controller, sales_payload, session):
+def test_update_client_returns_none_if_user_not_authenticated(
+        monkeypatch, client_controller, sales_payload, session):
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: sales_payload,)
-    
+
     client = client_controller.create_client(
         last_name='Doe',
         first_name='Jane',
@@ -176,7 +179,7 @@ def test_update_client_returns_none_if_user_not_authenticated(monkeypatch, clien
 
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: None,)
-    
+
     result = client_controller.update_client(
         client_id=client.id,
         last_name='Doe',
@@ -193,10 +196,11 @@ def test_update_client_returns_none_if_user_not_authenticated(monkeypatch, clien
     assert client.email == client_in_db.email
 
 
-def test_update_client_returns_none_if_user_does_not_have_sales_role(monkeypatch, client_controller, sales_payload, session):
+def test_update_client_returns_none_if_user_does_not_have_sales_role(
+        monkeypatch, client_controller, sales_payload, session):
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: sales_payload,)
-    
+
     client = client_controller.create_client(
         last_name='Doe',
         first_name='Jane',
@@ -204,7 +208,7 @@ def test_update_client_returns_none_if_user_does_not_have_sales_role(monkeypatch
     )
 
     sales_payload['role'] = 'management'
-    
+
     result = client_controller.update_client(
         client_id=client.id,
         last_name='Doe',
@@ -221,10 +225,11 @@ def test_update_client_returns_none_if_user_does_not_have_sales_role(monkeypatch
     assert client.email == client_in_db.email
 
 
-def test_update_client_returns_none_if_user_not_contact_of_client(monkeypatch, client_controller, sales_payload, session):
+def test_update_client_returns_none_if_user_not_contact_of_client(
+        monkeypatch, client_controller, sales_payload, session):
     monkeypatch.setattr('crm.controllers.client_controller.get_current_user_payload',
                         lambda: sales_payload,)
-    
+
     client = client_controller.create_client(
         last_name='Doe',
         first_name='Jane',
@@ -232,7 +237,7 @@ def test_update_client_returns_none_if_user_not_contact_of_client(monkeypatch, c
     )
 
     sales_payload['sub'] = '2'
-    
+
     result = client_controller.update_client(
         client_id=client.id,
         last_name='Doe',
