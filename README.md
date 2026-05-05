@@ -11,6 +11,7 @@ Some actions require the authenticated user to have a specific role.
 
 - [Tech Stack](#tech-stack)
 - [Features](#features)
+- [UML Diagram](#uml-diagram)
 - [Installation](#installation)
 - [Available Commands](#available-commands)
 - [Logs & Monitoring](#logs--monitoring)
@@ -52,6 +53,10 @@ Some actions require the authenticated user to have a specific role.
     - Update events assigned to them
 
 
+## UML Diagram
+![UML Diagram](docs/UML-diagram.png)
+
+
 ## Installation
 
 1. Clone the repository:
@@ -76,11 +81,11 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Create ".env" file at project root with:   
+4. Create ".env" file at project root with:
 ```
-DATABASE_URL=sqlite:///database/crm.db   
-JWT_SECRET_KEY=*your_secret_key*     
-SENTRY_DSN=*your_sentry_dsn* or ''     
+DATABASE_URL=sqlite:///database/crm.db
+JWT_SECRET_KEY=*your_secret_key*
+SENTRY_DSN=*your_sentry_dsn* or ''
 APP_ENV=development
 ```
 
@@ -198,7 +203,7 @@ Only the option ID is mandatory here: it expects the ID of the contract you wish
 python epicevents.py contracts detail --id 1
 ```
 #### Update contract by id
-Only the option ID is mandatory here: it expects the ID of the contract you wish to update. 
+Only the option ID is mandatory here: it expects the ID of the contract you wish to update.
 ```
 python epicevents.py contracts update --id 1 --client-id 1 --total-amount 2000 --remaining-amount 1000 --signed "yes"
 ```
@@ -222,7 +227,7 @@ python epicevents.py events list --to-assign
 python epicevents.py events list --assigned
 ```
 #### Event details by id
-The option ID is mandatory here: it expects the ID of the event you wish to see the details of. 
+The option ID is mandatory here: it expects the ID of the event you wish to see the details of.
 ```
 python epicevents.py events detail --id 1
 ```
